@@ -75,7 +75,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
     @Override
     public void onPeersDiscovered(java.util.List<Peer> peers) {
 
-        for(Peer peer : peers) {
+        for (Peer peer : peers) {
 
             ClientHandler clientHandler = ClientManager.getOrCreateClientHandler(peer);
             if (clientHandler == null) {
@@ -83,7 +83,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
                 return;
             }
 
-            if(clientHandler.getPeer().getDisplayName() == null) {
+            if (clientHandler.getPeer().getDisplayName() == null) {
                 handshake(clientHandler);
             }
         }

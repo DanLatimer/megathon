@@ -37,5 +37,5 @@ public abstract class DeployableWeapon extends Weapon {
     private void setTimeOut(int timeOut) {
         mTimeOut = timeOut;
     }
-    
+
 }

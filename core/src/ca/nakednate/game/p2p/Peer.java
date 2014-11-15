@@ -31,7 +31,7 @@ public class Peer {
 
     @Override
     public String toString() {
-        if(mDisplayName != null) {
+        if (mDisplayName != null) {
             return mDisplayName;
         }
 

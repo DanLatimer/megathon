@@ -15,7 +15,7 @@ public class Jeep extends Vehicle {
         setWeapon(new MachineGun());
         addDeployableWeapon(INITIAL_DEPLOYABLE_AMMO);
         setTexture(new Texture(Gdx.files.internal("skin/vehicle_jeep_red.png")));
-        setBounds(getX(),getY(),getTexture().getWidth(),getTexture().getHeight());
+        setBounds(getX(), getY(), getTexture().getWidth(), getTexture().getHeight());
     }
 
     public void addDeployableWeapon(int quantity) {
