@@ -8,6 +8,8 @@ import android.net.nsd.NsdManager.ResolveListener;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 import ca.nakednate.game.models.PlayerInfo;
+import ca.nakednate.game.p2p.Peer;
+import ca.nakednate.game.p2p.listeners.PeerDiscoveryListener;
 
 import java.io.OutputStream;
 import java.io.PrintWriter;
@@ -25,23 +27,27 @@ public class PeerDiscoverer {
     public static final String EXTRA_P2P_NAME = "EXTRA_P2P_NAME";
 
 
+    private PeerDiscoveryListener mPeerDiscoveryListener;
     private NsdManager.DiscoveryListener mDiscoveryListener;
     private NsdManager mNsdManager;
     private ResolveListener mResolveListener;
     private boolean mDiscoveringServices = false;
 
-    private List<NsdServiceInfo> mDiscoveredServices = new ArrayList<NsdServiceInfo>();
+    private List<Peer> mDiscoveredServices = new ArrayList<Peer>();
+
+    private Activity mActivity;
 
     public PeerDiscoverer(Activity activity) {
+        mActivity = activity;
+    }
+
+    public void start() {
         initializeResolveListener();
         initializeDiscoveryListener();
 
-        mNsdManager = (NsdManager) activity.getSystemService(Context.NSD_SERVICE);
-
-        discoverServices();
-
+        mNsdManager = (NsdManager) mActivity.getSystemService(Context.NSD_SERVICE);
+        refresh();
     }
-
 
     /**
      * Run
@@ -92,7 +98,12 @@ public class PeerDiscoverer {
             @Override
             public void onServiceResolved(NsdServiceInfo serviceInfo) {
                 Log.e(TAG, "Resolve Succeeded. " + serviceInfo);
-                mDiscoveredServices.add(serviceInfo);
+
+
+                Peer peer = new Peer(serviceInfo.getHost(), serviceInfo.getPort());
+                mDiscoveredServices.add(peer);
+
+                mPeerDiscoveryListener.onPeersDiscovered(mDiscoveredServices);
 
                 test_system_send_the_datas(serviceInfo);
             }
@@ -176,8 +187,10 @@ public class PeerDiscoverer {
                 mNsdManager.stopServiceDiscovery(this);
                 mDiscoveringServices = false;
             }
-        }
+        };
+    }
 
-        ;
+    public void setPeerDiscoveryListener(PeerDiscoveryListener peerDiscoveryListener) {
+        mPeerDiscoveryListener = peerDiscoveryListener;
     }
 }

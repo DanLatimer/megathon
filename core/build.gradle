@@ -1,5 +1,14 @@
 apply plugin: "java"
 
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'com.google.code.gson:gson:1.7.2'
+    }
+}
+
 sourceCompatibility = 1.6
 [compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
 
@@ -8,4 +17,8 @@ sourceSets.main.java.srcDirs = [ "src/" ]
 
 eclipse.project {
     name = appName + "-core"
+}
+
+dependencies {
+    compile 'com.google.code.gson:gson:1.7.2'
 }

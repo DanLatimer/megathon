@@ -5,7 +5,7 @@ import ca.nakednate.game.models.BaseModel;
 import ca.nakednate.game.models.DummyModel;
 import ca.nakednate.game.models.GameInfo;
 import ca.nakednate.game.models.PlayerInfo;
-import ca.nakednate.p2p.listeners.MainScreenListener;
+import ca.nakednate.game.p2p.listeners.MainScreenListener;
 
 import java.io.BufferedReader;
 

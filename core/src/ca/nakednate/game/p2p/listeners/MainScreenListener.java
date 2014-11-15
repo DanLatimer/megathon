@@ -1,4 +1,4 @@
-package ca.nakednate.p2p.listeners;
+package ca.nakednate.game.p2p.listeners;
 
 import ca.nakednate.game.models.GameInfo;
 import ca.nakednate.game.models.PlayerInfo;
