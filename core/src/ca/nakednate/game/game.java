@@ -17,108 +17,108 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 import java.util.Iterator;
 
-public class Game extends ApplicationAdapter implements Disposable{
-	private SpriteBatch batch;
-	private Texture dropImage;
-	private Texture bucketImage;
-	private Sound dropSound;
-	private Music rainSound;
+public class Game extends ApplicationAdapter implements Disposable {
+    private SpriteBatch batch;
+    private Texture dropImage;
+    private Texture bucketImage;
+    private Sound dropSound;
+    private Music rainSound;
 
-	private OrthographicCamera camera;
+    private OrthographicCamera camera;
 
-	private Rectangle bucket;
+    private Rectangle bucket;
 
-	private int width = 1920;
-	private int height = 1080;
-	private int bucketWidth = 64;
-	private int bottomBuffer = 20;
+    private int width = 1920;
+    private int height = 1080;
+    private int bucketWidth = 64;
+    private int bottomBuffer = 20;
 
-	private Array<Rectangle> raindrops;
-	private long lastDropTime;
-	
-	@Override
-	public void create () {
-		batch = new SpriteBatch();
+    private Array<Rectangle> raindrops;
+    private long lastDropTime;
 
-		dropImage = new Texture(Gdx.files.internal("droplet.png"));
-		bucketImage = new Texture(Gdx.files.internal("bucket.png"));
+    @Override
+    public void create() {
+        batch = new SpriteBatch();
 
-		dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-		rainSound = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+        dropImage = new Texture(Gdx.files.internal("droplet.png"));
+        bucketImage = new Texture(Gdx.files.internal("bucket.png"));
 
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, width, height);
+        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+        rainSound = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
 
-		bucket = new Rectangle();
-		bucket.x = width / 2 - bucketWidth / 2;
-		bucket.y = bottomBuffer;
-		bucket.width = bucketWidth;
-		bucket.height = bucketWidth;
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, width, height);
 
-		raindrops = new Array<Rectangle>();
-		spawnRaindrop();
+        bucket = new Rectangle();
+        bucket.x = width / 2 - bucketWidth / 2;
+        bucket.y = bottomBuffer;
+        bucket.width = bucketWidth;
+        bucket.height = bucketWidth;
 
-		rainSound.setLooping(true);
-		rainSound.play();
-	}
+        raindrops = new Array<Rectangle>();
+        spawnRaindrop();
 
-	@Override
-	public void render() {
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+        rainSound.setLooping(true);
+        rainSound.play();
+    }
 
-		if (TimeUtils.nanoTime() - lastDropTime > 1000000000) {
-			spawnRaindrop();
-		}
+    @Override
+    public void render() {
+        Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		Iterator<Rectangle> iter = raindrops.iterator();
-		while(iter.hasNext()) {
-			Rectangle raindrop = iter.next();
-			raindrop.y -= 200 * Gdx.graphics.getDeltaTime();//200 px per second
-			if(raindrop.y + bucketWidth < 0)
-				iter.remove();
-		}
+        if (TimeUtils.nanoTime() - lastDropTime > 1000000000) {
+            spawnRaindrop();
+        }
 
-		batch.begin();
-		batch.draw(bucketImage, bucket.x, bucket.y);
-		for(Rectangle raindrop: raindrops) {
-			batch.draw(dropImage, raindrop.x, raindrop.y);
-			if(raindrop.overlaps(bucket)) {
-				dropSound.play();
-				raindrops.removeIndex(raindrops.indexOf(raindrop,true));
-			}
-		}
-		batch.end();
+        Iterator<Rectangle> iter = raindrops.iterator();
+        while (iter.hasNext()) {
+            Rectangle raindrop = iter.next();
+            raindrop.y -= 200 * Gdx.graphics.getDeltaTime();//200 px per second
+            if (raindrop.y + bucketWidth < 0) {
+                iter.remove();
+            }
+        }
 
-		if(Gdx.input.isTouched()) {
-			Vector3 touchPos = new Vector3();
-			touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-			camera.unproject(touchPos);
-			bucket.x = touchPos.x - bucketWidth / 2;
-			bucket.y = touchPos.y - bucketWidth / 2;
-		}
+        batch.begin();
+        batch.draw(bucketImage, bucket.x, bucket.y);
+        for (Rectangle raindrop : raindrops) {
+            batch.draw(dropImage, raindrop.x, raindrop.y);
+            if (raindrop.overlaps(bucket)) {
+                dropSound.play();
+                raindrops.removeIndex(raindrops.indexOf(raindrop, true));
+            }
+        }
+        batch.end();
+
+        if (Gdx.input.isTouched()) {
+            Vector3 touchPos = new Vector3();
+            touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
+            camera.unproject(touchPos);
+            bucket.x = touchPos.x - bucketWidth / 2;
+            bucket.y = touchPos.y - bucketWidth / 2;
+        }
 
 
+        camera.update();
+    }
 
-		camera.update();
-	}
+    private void spawnRaindrop() {
+        Rectangle raindrop = new Rectangle();
+        raindrop.x = MathUtils.random(0, width - bucketWidth);
+        raindrop.y = height;
+        raindrop.width = bucketWidth;
+        raindrop.height = bucketWidth;
+        raindrops.add(raindrop);
+        lastDropTime = TimeUtils.nanoTime();
+    }
 
-	private void spawnRaindrop() {
-		Rectangle raindrop = new Rectangle();
-		raindrop.x = MathUtils.random(0, width - bucketWidth);
-		raindrop.y = height;
-		raindrop.width = bucketWidth;
-		raindrop.height = bucketWidth;
-		raindrops.add(raindrop);
-		lastDropTime = TimeUtils.nanoTime();
-	}
-
-	@Override
-	public void dispose() {
-		dropImage.dispose();
-		bucketImage.dispose();
-		dropSound.dispose();
-		rainSound.dispose();
-		batch.dispose();
-	}
+    @Override
+    public void dispose() {
+        dropImage.dispose();
+        bucketImage.dispose();
+        dropSound.dispose();
+        rainSound.dispose();
+        batch.dispose();
+    }
 }
