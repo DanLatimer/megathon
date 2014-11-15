@@ -8,33 +8,19 @@ import java.net.Socket;
 public class ClientHandler implements Runnable {
     private P2PServer mApp;
     private Socket mClient;
+    private MessageHandler messageParser;
 
     public ClientHandler(Socket client, P2PServer app) {
         mApp = app;
         mClient = client;
+        messageParser = new MessageHandler();
     }
 
     @Override
     public void run() {
         try {
             BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(mClient.getInputStream()));
-
-
-            // TODO: Parse command objects that have been JSON-ified
-
-//            String line;
-//            while ((line = bufferedReader.readLine()) != null) {
-//                int keyCode;
-//                try {
-//                    keyCode = Integer.parseInt(line);
-//                } catch (NumberFormatException e) {
-//                    e.printStackTrace();
-//                    continue;
-//                }
-//
-//                Instrumentation instrumentation = new Instrumentation();
-//                instrumentation.sendKeyDownUpSync(keyCode);
-//            }
+            messageParser.handleMessages(bufferedReader);
         } catch (IOException e) {
             e.printStackTrace();
         }
