@@ -11,15 +11,15 @@ public class P2PServer {
 
     private NsdManager mNsdManager;
     private NsdManager.RegistrationListener mRegistrationListener;
-    private Context mSoftKeyboard;
+    private Context mContext;
 
-    public P2PServer(Context softKeyboard) {
-        mSoftKeyboard = softKeyboard;
+    public P2PServer(Context context) {
+        mContext = context;
         registerService();
     }
 
     public Context getContext() {
-        return mSoftKeyboard;
+        return mContext;
     }
 
     public void tearDown() {
@@ -28,13 +28,13 @@ public class P2PServer {
 
     public void registerService() {
         mRegistrationListener = initializeRegistrationListener();
-        mNsdManager = (NsdManager) mSoftKeyboard.getSystemService(Context.NSD_SERVICE);
+        mNsdManager = (NsdManager) mContext.getSystemService(Context.NSD_SERVICE);
 
         SocketHandler socketHandler = new SocketHandler(this);
         socketHandler.setSocketOpenListener(new SocketListener() {
             @Override
             public void socketOpenFail() {
-                Toast.makeText(mSoftKeyboard, "Error establishing server socket", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Error establishing server socket", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -65,25 +65,25 @@ public class P2PServer {
                  * with the name Android actually used.
                  */
 //                mServiceName = NsdServiceInfo.getServiceName();
-                Toast.makeText(mSoftKeyboard, "Discovery Service Registered", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Discovery Service Registered", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
                 // Registration failed!  Put debugging code here to determine why.
-                Toast.makeText(mSoftKeyboard, "Discovery Service Registration Failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Discovery Service Registration Failed", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onServiceUnregistered(NsdServiceInfo arg0) {
                 // Service has been unregistered. Only happens when you call NsdManager.unregisterService() and pass in this listener
-                Toast.makeText(mSoftKeyboard, "Discovery Service UnRegistered", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Discovery Service UnRegistered", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
                 // Unregistration failed.  Put debugging code here to determine why.
-                Toast.makeText(mSoftKeyboard, "Discovery Service UnRegistration Failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(mContext, "Discovery Service UnRegistration Failed", Toast.LENGTH_LONG).show();
             }
         };
 
