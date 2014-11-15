@@ -1,16 +1,17 @@
 package ca.nakednate.game;
 
+import ca.nakednate.game.models.vehicle.Vehicle;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 
 public class LevelScreen extends BaseScreen {
 
-    private final String mPlayerName;
+    private final Vehicle mVehicle;
 
-    public LevelScreen(final UnfriendlyFire game, String playerName) {
+    public LevelScreen(final UnfriendlyFire game, Vehicle vehicle) {
         super(game);
-        mPlayerName = playerName;
+        mVehicle = vehicle;
     }
 
     @Override
@@ -19,7 +20,7 @@ public class LevelScreen extends BaseScreen {
 
         Table table = new Table();
 
-        Label welcomeLabel = new Label("Suck it, " + mPlayerName + "!", getGame().getSkin());
+        Label welcomeLabel = new Label("You selected the " + mVehicle.getClass().getSimpleName() + "!", getSkin());
 
         table.add(welcomeLabel);
         table.setBounds((Gdx.graphics.getWidth() / 2) - 100, Gdx.graphics.getHeight() / 2, 200, 100);
