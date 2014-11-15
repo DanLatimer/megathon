@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="150" tileheight="150">
+ <tileset firstgid="1" name="Proving Grounds" tilewidth="150" tileheight="150">
+  <tile id="0">
+   <image width="150" height="150" source="map_tiles/tile_ground_floor.png"/>
+  </tile>
+  <tile id="1">
+   <image width="150" height="150" source="map_tiles/tile_water_ground.png"/>
+  </tile>
+  <tile id="2">
+   <image width="150" height="150" source="map_tiles/tile_water_wall_vent.png"/>
+  </tile>
+  <tile id="3">
+   <image width="150" height="150" source="map_tiles/tile_water_wall.png"/>
+  </tile>
+  <tile id="4">
+   <image width="150" height="150" source="map_tiles/tile_wall_bottom_horizontal_left.png"/>
+  </tile>
+  <tile id="5">
+   <image width="150" height="150" source="map_tiles/tile_wall_bottom_horizontal_right.png"/>
+  </tile>
+  <tile id="6">
+   <image width="150" height="150" source="map_tiles/tile_wall_bottom_horizontal.png"/>
+  </tile>
+  <tile id="7">
+   <image width="150" height="150" source="map_tiles/tile_wall_bottom.png"/>
+  </tile>
+  <tile id="8">
+   <image width="150" height="150" source="map_tiles/tile_wall_corner_bottomleft.png"/>
+  </tile>
+  <tile id="9">
+   <image width="150" height="150" source="map_tiles/tile_wall_corner_bottomright.png"/>
+  </tile>
+  <tile id="10">
+   <image width="150" height="150" source="map_tiles/tile_wall_corner_topleft.png"/>
+  </tile>
+  <tile id="11">
+   <image width="150" height="150" source="map_tiles/tile_wall_corner_topright.png"/>
+  </tile>
+  <tile id="12">
+   <image width="150" height="150" source="map_tiles/tile_wall_horizontal_end_left.png"/>
+  </tile>
+  <tile id="13">
+   <image width="150" height="150" source="map_tiles/tile_wall_horizontal_end_right.png"/>
+  </tile>
+  <tile id="14">
+   <image width="150" height="150" source="map_tiles/tile_wall_horizontal_straight.png"/>
+  </tile>
+  <tile id="15">
+   <image width="150" height="150" source="map_tiles/tile_wall_vertial_end_up.png"/>
+  </tile>
+  <tile id="16">
+   <image width="150" height="150" source="map_tiles/tile_wall_vertical_end_bottom.png"/>
+  </tile>
+  <tile id="17">
+   <image width="150" height="150" source="map_tiles/tile_wall_vertical_straight.png"/>
+  </tile>
+  <tile id="18">
+   <image width="150" height="150" source="map_tiles/tile_wall_3way_vertical_left.png"/>
+  </tile>
+  <tile id="19">
+   <image width="150" height="150" source="map_tiles/tile_wall_3way_vertical_right.png"/>
+  </tile>
+ </tileset>
+ <tileset firstgid="21" name="tileset_bridge" tilewidth="900" tileheight="600">
+  <image source="map_tiles/tileset_bridge.png" width="900" height="600"/>
+ </tileset>
+ <layer name="main" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztl8sKgCAQRW9lRW+w/v9bc5EbTYiLMEqzOOBC54jDzOAC4BBidVjHKIR9aIRQv/pr9G+Ia3kn/ScRp0dcywNx7wtx//kShyW8d635V39ev0nQJdbmJdbbntRZj/e3BKGfiVHK+//Zz/Rfllz9l50/ufovO39KzL/61a9+Of8Euf/37LgBOQkOoQ==
+  </data>
+ </layer>
+ <layer name="bridge" width="32" height="32">
+  <data encoding="base64" compression="zlib">
+   eJztzgENAAAIA6CXsH9VY1w3SEACAHDftAMA8NwCqTwAFg==
+  </data>
+ </layer>
+</map>
