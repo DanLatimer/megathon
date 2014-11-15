@@ -2,7 +2,10 @@ package ca.nakednate.game;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.viewport.Viewport;
 
 public class BaseScreen implements Screen {
 
@@ -16,13 +19,16 @@ public class BaseScreen implements Screen {
 
     @Override
     public void render(float delta) {
-        mStage.act(Gdx.graphics.getDeltaTime());
-        mStage.draw();
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        getStage().act(Gdx.graphics.getDeltaTime());
+        getStage().draw();
     }
 
     @Override
     public void resize(int width, int height) {
-
+        getStage().getViewport().update(width, height, true);
     }
 
     @Override
@@ -48,11 +54,15 @@ public class BaseScreen implements Screen {
 
     @Override
     public void dispose() {
-        mStage.dispose();
+        getStage().dispose();
     }
 
     public ScorchedPlanet getGame() {
         return mGame;
+    }
+
+    public Skin getSkin() {
+        return getGame().getSkin();
     }
 
     public Stage getStage() {
