@@ -1,6 +1,6 @@
 package ca.nakednate.game.p2p.listeners;
 
-import ca.nakednate.p2p.Peer;
+import ca.nakednate.game.p2p.Peer;
 
 import java.util.List;
 
