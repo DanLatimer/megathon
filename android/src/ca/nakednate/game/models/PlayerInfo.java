@@ -10,11 +10,11 @@ public class PlayerInfo extends BaseModel {
         mDisplayName = displayName;
     }
 
-    public String getmDisplayName() {
+    public String getDisplayName() {
         return mDisplayName;
     }
 
-    public void setmDisplayName(String mDisplayName) {
-        this.mDisplayName = mDisplayName;
+    public void setDisplayName(String displayName) {
+        mDisplayName = displayName;
     }
 }
