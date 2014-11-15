@@ -1,25 +1,25 @@
 package ca.nakednate.p2p;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.widget.Toast;
 
 public class P2PServer {
-    private static final String SERVICE_NAME = "ScorchedPlanet";
-    private static final String SERVICE_TYPE = "_http._tcp.";
+
 
     private NsdManager mNsdManager;
     private NsdManager.RegistrationListener mRegistrationListener;
-    private Context mContext;
+    private Activity mActivity;
 
-    public P2PServer(Context context) {
-        mContext = context;
+    public P2PServer(Activity activity) {
+        mActivity = activity;
         registerService();
     }
 
-    public Context getContext() {
-        return mContext;
+    public Activity getActivity() {
+        return mActivity;
     }
 
     public void tearDown() {
@@ -28,13 +28,13 @@ public class P2PServer {
 
     public void registerService() {
         mRegistrationListener = initializeRegistrationListener();
-        mNsdManager = (NsdManager) mContext.getSystemService(Context.NSD_SERVICE);
+        mNsdManager = (NsdManager) mActivity.getSystemService(Context.NSD_SERVICE);
 
         SocketHandler socketHandler = new SocketHandler(this);
         socketHandler.setSocketOpenListener(new SocketListener() {
             @Override
             public void socketOpenFail() {
-                Toast.makeText(mContext, "Error establishing server socket", Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, "Error establishing server socket", Toast.LENGTH_LONG).show();
             }
 
             @Override
@@ -44,9 +44,9 @@ public class P2PServer {
 
                 // The name is subject to change based on conflicts
                 // with other services advertised on the same network.
-                serviceInfo.setServiceName(SERVICE_NAME);
+                serviceInfo.setServiceName(PeerDiscoverer.SERVICE_NAME);
 
-                serviceInfo.setServiceType(SERVICE_TYPE);
+                serviceInfo.setServiceType(PeerDiscoverer.SERVICE_TYPE);
                 serviceInfo.setPort(port);
 
                 mNsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
@@ -65,25 +65,25 @@ public class P2PServer {
                  * with the name Android actually used.
                  */
 //                mServiceName = NsdServiceInfo.getServiceName();
-                Toast.makeText(mContext, "Discovery Service Registered", Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, "Discovery Service Registered", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onRegistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
                 // Registration failed!  Put debugging code here to determine why.
-                Toast.makeText(mContext, "Discovery Service Registration Failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, "Discovery Service Registration Failed", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onServiceUnregistered(NsdServiceInfo arg0) {
                 // Service has been unregistered. Only happens when you call NsdManager.unregisterService() and pass in this listener
-                Toast.makeText(mContext, "Discovery Service UnRegistered", Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, "Discovery Service UnRegistered", Toast.LENGTH_LONG).show();
             }
 
             @Override
             public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {
                 // Unregistration failed.  Put debugging code here to determine why.
-                Toast.makeText(mContext, "Discovery Service UnRegistration Failed", Toast.LENGTH_LONG).show();
+                Toast.makeText(mActivity, "Discovery Service UnRegistration Failed", Toast.LENGTH_LONG).show();
             }
         };
 

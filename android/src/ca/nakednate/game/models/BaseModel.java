@@ -14,7 +14,13 @@ public class BaseModel {
     private static final Gson mGson = new Gson();
 
     public String toJSON() {
-        return mGson.toJson(this);
+        String json = mGson.toJson(this);
+        removeNewlines(json);
+        return json;
+    }
+
+    private void removeNewlines(String json) {
+        json.replaceAll("\\r?\\n", "");
     }
 
     public static <T extends BaseModel> T fromJson(String serializedModel, Class<T> type) {
