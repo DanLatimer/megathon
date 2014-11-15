@@ -18,49 +18,46 @@ import com.badlogic.gdx.utils.TimeUtils;
 import java.util.Iterator;
 
 public class Game extends ApplicationAdapter implements Disposable {
-    private SpriteBatch batch;
-    private Texture dropImage;
-    private Texture bucketImage;
-    private Sound dropSound;
-    private Music rainSound;
+    private SpriteBatch mBatch;
+    private Texture mDropImage;
+    private Texture mBucketImage;
+    private Sound mDropSound;
+    private Music mRainSound;
+    private OrthographicCamera mCamera;
+    private Rectangle mBucket;
+    private Array<Rectangle> mRaindrops;
+    private long mLastDropTime;
 
-    private OrthographicCamera camera;
-
-    private Rectangle bucket;
-
-    private int width = 1920;
-    private int height = 1080;
-    private int bucketWidth = 64;
-    private int bucketHeight = 64;
-    private int bottomBuffer = 20;
-
-    private Array<Rectangle> raindrops;
-    private long lastDropTime;
+    private static final int WIDTH = 1920;
+    private static final int HEIGHT = 1080;
+    private static final int BUCKET_WIDTH = 64;
+    private static final int BUCKET_HEIGHT = 64;
+    private static final int BOTTOM_BUFFER = 20;
 
     @Override
     public void create() {
-        batch = new SpriteBatch();
+        mBatch = new SpriteBatch();
 
-        dropImage = new Texture(Gdx.files.internal("droplet.png"));
-        bucketImage = new Texture(Gdx.files.internal("bucket.png"));
+        mDropImage = new Texture(Gdx.files.internal("droplet.png"));
+        mBucketImage = new Texture(Gdx.files.internal("bucket.png"));
 
-        dropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
-        rainSound = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
+        mDropSound = Gdx.audio.newSound(Gdx.files.internal("drop.wav"));
+        mRainSound = Gdx.audio.newMusic(Gdx.files.internal("rain.mp3"));
 
-        camera = new OrthographicCamera();
-        camera.setToOrtho(false, width, height);
+        mCamera = new OrthographicCamera();
+        mCamera.setToOrtho(false, WIDTH, HEIGHT);
 
-        bucket = new Rectangle();
-        bucket.x = width / 2 - bucketWidth / 2;
-        bucket.y = bottomBuffer;
-        bucket.width = bucketWidth;
-        bucket.height = bucketHeight;
+        mBucket = new Rectangle();
+        mBucket.x = WIDTH / 2 - BUCKET_WIDTH / 2;
+        mBucket.y = BOTTOM_BUFFER;
+        mBucket.width = BUCKET_WIDTH;
+        mBucket.height = BUCKET_HEIGHT;
 
-        raindrops = new Array<Rectangle>();
+        mRaindrops = new Array<Rectangle>();
         spawnRaindrop();
 
-        rainSound.setLooping(true);
-        rainSound.play();
+        mRainSound.setLooping(true);
+        mRainSound.play();
     }
 
     @Override
@@ -68,58 +65,58 @@ public class Game extends ApplicationAdapter implements Disposable {
         Gdx.gl.glClearColor(0, 0, 0.2f, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (TimeUtils.nanoTime() - lastDropTime > 1000000000) {
+        if (TimeUtils.nanoTime() - mLastDropTime > 1000000000) {
             spawnRaindrop();
         }
 
-        Iterator<Rectangle> iter = raindrops.iterator();
+        Iterator<Rectangle> iter = mRaindrops.iterator();
         while (iter.hasNext()) {
             Rectangle raindrop = iter.next();
             raindrop.y -= 200 * Gdx.graphics.getDeltaTime();//200 px per second
-            if (raindrop.y + bucketHeight < 0) {
+            if (raindrop.y + BUCKET_HEIGHT < 0) {
                 iter.remove();
             }
         }
 
-        batch.begin();
-        batch.draw(bucketImage, bucket.x, bucket.y);
-        for (Rectangle raindrop : raindrops) {
-            batch.draw(dropImage, raindrop.x, raindrop.y);
-            if (raindrop.overlaps(bucket)) {
-                dropSound.play();
-                raindrops.removeIndex(raindrops.indexOf(raindrop, true));
+        mBatch.begin();
+        mBatch.draw(mBucketImage, mBucket.x, mBucket.y);
+        for (Rectangle raindrop : mRaindrops) {
+            mBatch.draw(mDropImage, raindrop.x, raindrop.y);
+            if (raindrop.overlaps(mBucket)) {
+                mDropSound.play();
+                mRaindrops.removeIndex(mRaindrops.indexOf(raindrop, true));
             }
         }
-        batch.end();
+        mBatch.end();
 
         if (Gdx.input.isTouched()) {
             Vector3 touchPos = new Vector3();
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
-            camera.unproject(touchPos);
-            bucket.x = touchPos.x - bucketWidth / 2;
-            bucket.y = touchPos.y - bucketHeight / 2;
+            mCamera.unproject(touchPos);
+            mBucket.x = touchPos.x - BUCKET_WIDTH / 2;
+            mBucket.y = touchPos.y - BUCKET_HEIGHT / 2;
         }
 
 
-        camera.update();
+        mCamera.update();
     }
 
     private void spawnRaindrop() {
         Rectangle raindrop = new Rectangle();
-        raindrop.x = MathUtils.random(0, width - bucketWidth);
-        raindrop.y = height;
-        raindrop.width = bucketWidth;
-        raindrop.height = bucketHeight;
-        raindrops.add(raindrop);
-        lastDropTime = TimeUtils.nanoTime();
+        raindrop.x = MathUtils.random(0, WIDTH - BUCKET_WIDTH);
+        raindrop.y = HEIGHT;
+        raindrop.width = BUCKET_WIDTH;
+        raindrop.height = BUCKET_HEIGHT;
+        mRaindrops.add(raindrop);
+        mLastDropTime = TimeUtils.nanoTime();
     }
 
     @Override
     public void dispose() {
-        dropImage.dispose();
-        bucketImage.dispose();
-        dropSound.dispose();
-        rainSound.dispose();
-        batch.dispose();
+        mDropImage.dispose();
+        mBucketImage.dispose();
+        mDropSound.dispose();
+        mRainSound.dispose();
+        mBatch.dispose();
     }
 }
