@@ -33,7 +33,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener 
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                getGame().setScreen(new LevelScreen(getGame(), mPeerListView.getSelected().toString()));
+                getGame().setScreen(new VehicleSelectionScreen(getGame()));
             }
         });
         ScrollPane scrollPane = new ScrollPane(mPeerListView, getSkin());
