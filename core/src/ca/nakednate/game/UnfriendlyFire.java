@@ -4,12 +4,11 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class ScorchedPlanet extends Game {
-
+public class UnfriendlyFire extends Game {
 
     private MainMenuScreen mMainMenuScreen;
 
-    public ScorchedPlanet() {
+    public UnfriendlyFire() {
         super();
         mMainMenuScreen = new MainMenuScreen(this);
     }
@@ -20,7 +19,6 @@ public class ScorchedPlanet extends Game {
     public void create() {
 
         setSkin(new Skin(Gdx.files.internal("skin/uiskin.json")));
-
 
         setScreen(mMainMenuScreen);
     }

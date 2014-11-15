@@ -8,11 +8,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class BaseScreen implements Screen {
 
-    final private ScorchedPlanet mGame;
+    final private UnfriendlyFire mGame;
 
     private Stage mStage;
 
-    public BaseScreen(final ScorchedPlanet game) {
+    public BaseScreen(final UnfriendlyFire game) {
         mGame = game;
     }
 
@@ -56,7 +56,7 @@ public class BaseScreen implements Screen {
         getStage().dispose();
     }
 
-    public ScorchedPlanet getGame() {
+    public UnfriendlyFire getGame() {
         return mGame;
     }
 

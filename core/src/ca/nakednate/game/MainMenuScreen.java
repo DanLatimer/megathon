@@ -13,7 +13,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener 
 
     List<Peer> mPeerListView;
 
-    public MainMenuScreen(final ScorchedPlanet game) {
+    public MainMenuScreen(final UnfriendlyFire game) {
         super(game);
     }
 

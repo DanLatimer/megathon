@@ -2,7 +2,7 @@ package ca.nakednate.game.android;
 
 import android.os.Bundle;
 import android.os.Handler;
-import ca.nakednate.game.ScorchedPlanet;
+import ca.nakednate.game.UnfriendlyFire;
 import ca.nakednate.game.p2p.listeners.PeerDiscoveryListener;
 import ca.nakednate.p2p.P2PServer;
 import ca.nakednate.p2p.PeerDiscoverer;
@@ -27,9 +27,9 @@ public class AndroidLauncher extends AndroidApplication {
 
 
 
-		ScorchedPlanet scorchedPlanet = new ScorchedPlanet();
+		UnfriendlyFire unfriendlyFire = new UnfriendlyFire();
 
-		PeerDiscoveryListener peerDiscoveryListener = scorchedPlanet.getPeerDiscoveryListener();
+		PeerDiscoveryListener peerDiscoveryListener = unfriendlyFire.getPeerDiscoveryListener();
 		peerDiscoverer.setPeerDiscoveryListener(peerDiscoveryListener);
 
 		Handler handler = new Handler();
@@ -38,9 +38,9 @@ public class AndroidLauncher extends AndroidApplication {
 			public void run() {
 				peerDiscoverer.start();
 			}
-		}, 500);
+		}, 3000);
 
-		initialize(scorchedPlanet, config);
+		initialize(unfriendlyFire, config);
 	}
 
 //	@Override

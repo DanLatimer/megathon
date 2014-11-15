@@ -8,7 +8,7 @@ public class LevelScreen extends BaseScreen {
 
     private final String mPlayerName;
 
-    public LevelScreen(final ScorchedPlanet game, String playerName) {
+    public LevelScreen(final UnfriendlyFire game, String playerName) {
         super(game);
         mPlayerName = playerName;
     }
