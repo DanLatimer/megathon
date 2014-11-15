@@ -92,7 +92,7 @@ public class PeerDiscoverer {
             @Override
             public void onResolveFailed(NsdServiceInfo serviceInfo, int errorCode) {
                 // Called when the resolve fails.  Use the error code to debug.
-                Log.e(TAG, "Resolve failed" + errorCode);
+                Log.e(TAG, "Resolve failed: " + errorCode);
             }
 
             @Override
@@ -116,8 +116,7 @@ public class PeerDiscoverer {
      */
     private void test_system_send_the_datas(NsdServiceInfo serviceInfo) {
         try {
-            Socket mServerSocket = new Socket(serviceInfo.getHost(),
-                    serviceInfo.getPort());
+            Socket mServerSocket = new Socket(serviceInfo.getHost(), serviceInfo.getPort());
 
             OutputStream out = mServerSocket.getOutputStream();
             PrintWriter printWriter = new PrintWriter(out);
@@ -149,11 +148,15 @@ public class PeerDiscoverer {
             @Override
             public void onServiceFound(NsdServiceInfo service) {
                 // A service was found!  Do something with it.
-                Log.d(TAG, "Service discovery success" + service);
+                Log.d(TAG, "Service discovery success " + service);
                 if (!service.getServiceType().equals(SERVICE_TYPE)) {
                     // Service type is the string containing the protocol and
                     // transport layer for this service.
                     Log.d(TAG, "Unknown Service Type: " + service.getServiceType());
+                } else if (service.getServiceName().equals(P2PServer.getServiceName())) {
+                    // The name of the service tells the user what they'd be
+                    // connecting to.
+                    Log.d(TAG, "Same machine: " + P2PServer.getServiceName());
                 } else if (service.getServiceName().startsWith(SERVICE_NAME)) {
                     mNsdManager.resolveService(service, mResolveListener);
                 }
@@ -163,7 +166,7 @@ public class PeerDiscoverer {
             public void onServiceLost(final NsdServiceInfo serviceInfo) {
                 // When the network service is no longer available.
                 // Internal bookkeeping code goes here.
-                Log.e(TAG, "service lost" + serviceInfo);
+                Log.e(TAG, "service lost " + serviceInfo);
 
                 mDiscoveredServices.remove(serviceInfo);
             }
@@ -176,14 +179,14 @@ public class PeerDiscoverer {
 
             @Override
             public void onStartDiscoveryFailed(String serviceType, int errorCode) {
-                Log.e(TAG, "Discovery failed: Error code:" + errorCode);
+                Log.e(TAG, "Discovery failed: Error code: " + errorCode);
                 mNsdManager.stopServiceDiscovery(this);
                 mDiscoveringServices = false;
             }
 
             @Override
             public void onStopDiscoveryFailed(String serviceType, int errorCode) {
-                Log.e(TAG, "Discovery failed: Error code:" + errorCode);
+                Log.e(TAG, "Discovery failed: Error code: " + errorCode);
                 mNsdManager.stopServiceDiscovery(this);
                 mDiscoveringServices = false;
             }

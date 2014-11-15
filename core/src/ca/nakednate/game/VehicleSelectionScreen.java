@@ -31,23 +31,11 @@ public class VehicleSelectionScreen extends BaseScreen {
 
         Image jeepImage = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/vehicle_jeep_red.png"))));
         Button jeepButton = new Button(jeepImage, getSkin());
-        jeepButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                launchGame(new Jeep());
-            }
-        });
+        jeepButton.addListener(getLaunchGameClickListener(new Jeep()));
 
         Image tankImage = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/vehicle_jeep_blue.png"))));
         Button tankButton = new Button(tankImage, getSkin());
-        tankButton.addListener(new ClickListener() {
-            @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-                launchGame(new Tank());
-            }
-        });
+        tankButton.addListener(getLaunchGameClickListener(new Tank()));
 
         Table table = new Table();
         table.add(titleLabel).colspan(2);
@@ -58,6 +46,16 @@ public class VehicleSelectionScreen extends BaseScreen {
                 table.getHeight());
 
         getStage().addActor(table);
+    }
+
+    private ClickListener getLaunchGameClickListener(final Vehicle vehicle) {
+        return new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                launchGame(vehicle);
+            }
+        };
     }
 
     private void launchGame(Vehicle selectedVehicle) {

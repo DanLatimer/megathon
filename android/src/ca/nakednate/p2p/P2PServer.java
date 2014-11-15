@@ -8,6 +8,7 @@ import android.widget.Toast;
 
 public class P2PServer {
 
+    private static String mServiceName;
 
     private NsdManager mNsdManager;
     private NsdManager.RegistrationListener mRegistrationListener;
@@ -20,6 +21,10 @@ public class P2PServer {
 
     public Activity getActivity() {
         return mActivity;
+    }
+
+    public static String getServiceName() {
+        return mServiceName;
     }
 
     public void tearDown() {
@@ -64,7 +69,7 @@ public class P2PServer {
                  * resolve a conflict, so update the name you initially requested
                  * with the name Android actually used.
                  */
-//                mServiceName = NsdServiceInfo.getServiceName();
+                mServiceName = NsdServiceInfo.getServiceName();
                 Toast.makeText(mActivity, "Discovery Service Registered", Toast.LENGTH_LONG).show();
             }
 
