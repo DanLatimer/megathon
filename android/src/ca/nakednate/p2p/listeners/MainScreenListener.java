@@ -9,6 +9,7 @@ import ca.nakednate.game.models.PlayerInfo;
 public interface MainScreenListener {
 
     public void onGameInfoRecieved(GameInfo gameInfo);
+
     public void onPlayerInfoRecieved(PlayerInfo playerInfo);
 
 }

@@ -15,8 +15,8 @@ public class MessageHandler {
 
     private MainScreenListener mMainScreenListener = null;
 
-    public void setmMainScreenListener(MainScreenListener mMainScreenListener) {
-        this.mMainScreenListener = mMainScreenListener;
+    public void setMainScreenListener(MainScreenListener mainScreenListener) {
+        mMainScreenListener = mainScreenListener;
     }
 
     /**
@@ -58,6 +58,7 @@ public class MessageHandler {
 
     /**
      * Handles GameInfo objects
+     *
      * @param gameInfo
      */
     private void handleObject(GameInfo gameInfo) {
@@ -68,6 +69,7 @@ public class MessageHandler {
 
     /**
      * Handles PlayerInfo objects
+     *
      * @param playerInfo
      */
     private void handleObject(PlayerInfo playerInfo) {
