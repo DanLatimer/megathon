@@ -7,7 +7,7 @@ import com.google.gson.JsonSyntaxException;
 /**
  * Base class for data models
  */
-public class BaseModel {
+public abstract class BaseModel {
 
     private static final String LOG_TAG = BaseModel.class.getSimpleName();
 
