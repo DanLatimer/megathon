@@ -19,7 +19,7 @@ public class ScorchedPlanet extends Game {
     @Override
     public void create() {
 
-        setSkin(new Skin(Gdx.files.internal("data/uiskin.json")));
+        setSkin(new Skin(Gdx.files.internal("skin/uiskin.json")));
 
 
         setScreen(mMainMenuScreen);
