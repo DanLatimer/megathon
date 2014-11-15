@@ -31,6 +31,7 @@ public class Game extends ApplicationAdapter implements Disposable {
     private int width = 1920;
     private int height = 1080;
     private int bucketWidth = 64;
+    private int bucketHeight = 64;
     private int bottomBuffer = 20;
 
     private Array<Rectangle> raindrops;
@@ -53,7 +54,7 @@ public class Game extends ApplicationAdapter implements Disposable {
         bucket.x = width / 2 - bucketWidth / 2;
         bucket.y = bottomBuffer;
         bucket.width = bucketWidth;
-        bucket.height = bucketWidth;
+        bucket.height = bucketHeight;
 
         raindrops = new Array<Rectangle>();
         spawnRaindrop();
@@ -75,7 +76,7 @@ public class Game extends ApplicationAdapter implements Disposable {
         while (iter.hasNext()) {
             Rectangle raindrop = iter.next();
             raindrop.y -= 200 * Gdx.graphics.getDeltaTime();//200 px per second
-            if (raindrop.y + bucketWidth < 0) {
+            if (raindrop.y + bucketHeight < 0) {
                 iter.remove();
             }
         }
@@ -96,7 +97,7 @@ public class Game extends ApplicationAdapter implements Disposable {
             touchPos.set(Gdx.input.getX(), Gdx.input.getY(), 0);
             camera.unproject(touchPos);
             bucket.x = touchPos.x - bucketWidth / 2;
-            bucket.y = touchPos.y - bucketWidth / 2;
+            bucket.y = touchPos.y - bucketHeight / 2;
         }
 
 
@@ -108,7 +109,7 @@ public class Game extends ApplicationAdapter implements Disposable {
         raindrop.x = MathUtils.random(0, width - bucketWidth);
         raindrop.y = height;
         raindrop.width = bucketWidth;
-        raindrop.height = bucketWidth;
+        raindrop.height = bucketHeight;
         raindrops.add(raindrop);
         lastDropTime = TimeUtils.nanoTime();
     }
