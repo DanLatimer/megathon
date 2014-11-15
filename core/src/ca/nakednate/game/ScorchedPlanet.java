@@ -7,6 +7,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 public class ScorchedPlanet extends Game {
 
 
+    private MainMenuScreen mMainMenuScreen;
+
+    public ScorchedPlanet() {
+        super();
+        mMainMenuScreen = new MainMenuScreen(this);
+    }
+
     private Skin mSkin;
 
     @Override
@@ -14,7 +21,8 @@ public class ScorchedPlanet extends Game {
 
         setSkin(new Skin(Gdx.files.internal("data/uiskin.json")));
 
-        setScreen(new MainMenuScreen(this));
+
+        setScreen(mMainMenuScreen);
     }
 
     @Override
@@ -34,4 +42,9 @@ public class ScorchedPlanet extends Game {
     public void setSkin(Skin skin) {
         mSkin = skin;
     }
+
+    public ca.nakednate.game.p2p.listeners.PeerDiscoveryListener getPeerDiscoveryListener() {
+        return mMainMenuScreen;
+    }
+
 }
