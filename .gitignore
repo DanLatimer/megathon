@@ -1,6 +1,7 @@
 # Megathon addtions
 
 .*
+.idea/
 *.iml
 !.gitignore
 
