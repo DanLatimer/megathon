@@ -1,11 +1,11 @@
-package ca.nakednate.p2p;
+package ca.nakednate.game.p2p;
 
-import android.util.Log;
 import ca.nakednate.game.models.BaseModel;
-import ca.nakednate.game.models.DummyModel;
-import ca.nakednate.game.models.GameInfo;
-import ca.nakednate.game.models.PlayerInfo;
+import ca.nakednate.game.models.events.BaseEvent;
+import ca.nakednate.game.models.events.DummyEvent;
+import ca.nakednate.game.models.events.NewPlayerEvent;
 import ca.nakednate.game.p2p.listeners.MainScreenListener;
+import com.badlogic.gdx.Gdx;
 
 import java.io.BufferedReader;
 
@@ -21,6 +21,12 @@ public class MessageHandler {
         mMainScreenListener = mainScreenListener;
     }
 
+    private ClientHandler mClientHandler;
+
+    public MessageHandler(ClientHandler clientHandler) {
+        mClientHandler = clientHandler;
+    }
+
     /**
      * Parses a message and handles it
      *
@@ -34,12 +40,12 @@ public class MessageHandler {
                 return;
             }
 
-            Object object = getObject(clazz, bufferedReader);
-            if (object == null) {
+            BaseEvent event = getEvent(clazz, bufferedReader);
+            if (event == null) {
                 return;
             }
 
-            handleObject(clazz, object);
+            handleEvent(clazz, event);
         }
     }
 
@@ -48,35 +54,22 @@ public class MessageHandler {
      * class specific versions. Can't think of anything quick to do it though.
      *
      * @param clazz
-     * @param object
+     * @param event
      */
-    private void handleObject(Class clazz, Object object) {
-        if (clazz == GameInfo.class) {
-            handleObject((GameInfo) object);
-        } else if (clazz == PlayerInfo.class) {
-            handleObject((PlayerInfo) object);
-        }
-    }
-
-    /**
-     * Handles GameInfo objects
-     *
-     * @param gameInfo
-     */
-    private void handleObject(GameInfo gameInfo) {
-        if (mMainScreenListener != null) {
-            mMainScreenListener.onGameInfoRecieved(gameInfo);
+    private void handleEvent(Class clazz, BaseEvent event) {
+        if (clazz == NewPlayerEvent.class) {
+            handleObject((NewPlayerEvent) event);
         }
     }
 
     /**
      * Handles PlayerInfo objects
      *
-     * @param playerInfo
+     * @param newPlayerEvent
      */
-    private void handleObject(PlayerInfo playerInfo) {
+    private void handleObject(NewPlayerEvent newPlayerEvent) {
         if (mMainScreenListener != null) {
-            mMainScreenListener.onPlayerInfoRecieved(playerInfo);
+            mMainScreenListener.onNewPlayerRecieved(newPlayerEvent);
         }
     }
 
@@ -110,18 +103,20 @@ public class MessageHandler {
      * @param bufferedReader
      * @return return null if EOF, return DummyModel if unparsable
      */
-    private Object getObject(Class clazz, BufferedReader bufferedReader) {
+    private BaseEvent getEvent(Class clazz, BufferedReader bufferedReader) {
         String line = getLine(bufferedReader);
         if (line == null) {
             return null;
         }
 
-        Object object = BaseModel.fromJson(line, clazz);
-        if (object == null) {
-            return new DummyModel();
+        BaseEvent event = (BaseEvent) BaseModel.fromJson(line, clazz);
+        if (event == null) {
+            return new DummyEvent(mClientHandler);
         }
 
-        return object;
+        event.setMessageOriginator(mClientHandler);
+
+        return event;
     }
 
     /**
@@ -133,7 +128,7 @@ public class MessageHandler {
     private String getLine(BufferedReader bufferedReader) {
         try {
             String line = bufferedReader.readLine();
-            Log.i(LOG_TAG, "LINE: " + line);
+            Gdx.app.log(LOG_TAG, "LINE: " + line);
             return line;
         } catch (Exception e) {
             e.printStackTrace();
