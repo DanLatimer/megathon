@@ -1,6 +1,6 @@
 package ca.nakednate.game.models;
 
-import android.util.Log;
+import com.badlogic.gdx.Gdx;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
@@ -29,7 +29,7 @@ public class BaseModel {
             try {
                 model = mGson.fromJson(serializedModel, type);
             } catch (JsonSyntaxException e) {
-                Log.e(LOG_TAG, "Could not de-serialize object");
+                Gdx.app.error(LOG_TAG, "Could not de-serialize object");
             }
         }
         return model;
