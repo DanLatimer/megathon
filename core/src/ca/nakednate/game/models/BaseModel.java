@@ -16,12 +16,12 @@ public abstract class BaseModel extends Actor {
 
     public String toJSON() {
         String json = mGson.toJson(this);
-        removeNewlines(json);
+        json = removeNewlines(json);
         return json;
     }
 
-    private void removeNewlines(String json) {
-        json.replaceAll("\\r?\\n", "");
+    private String removeNewlines(String json) {
+        return json.replaceAll("\\r?\\n", "");
     }
 
     public static <T extends BaseModel> T fromJson(String serializedModel, Class<T> type) {

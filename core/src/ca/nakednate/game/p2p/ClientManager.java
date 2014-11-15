@@ -32,7 +32,7 @@ public class ClientManager {
 
         addClientHandler(clientHandler);
 
-        if(mMainScreenListener != null) {
+        if (mMainScreenListener != null) {
             mMainScreenListener.onNewClientAdded();
         }
 

@@ -47,7 +47,7 @@ public class ClientHandler implements Runnable {
      * @return
      */
     public Peer getPeer() {
-        if(mPeer == null) {
+        if (mPeer == null) {
             mPeer = new Peer(mClient.getInetAddress(), mClient.getPort());
         }
         return mPeer;

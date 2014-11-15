@@ -66,7 +66,7 @@ public abstract class Vehicle extends GameObject {
     }
 
     private Stack<DeployableWeapon> getDeployableWeapon() {
-        if(mDeployableWeapon == null) {
+        if (mDeployableWeapon == null) {
             mDeployableWeapon = new Stack<DeployableWeapon>();
         }
         return mDeployableWeapon;
