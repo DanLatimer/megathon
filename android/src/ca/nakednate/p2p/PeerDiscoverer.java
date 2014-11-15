@@ -7,13 +7,9 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdManager.ResolveListener;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
-import ca.nakednate.game.models.PlayerInfo;
 import ca.nakednate.game.p2p.Peer;
 import ca.nakednate.game.p2p.listeners.PeerDiscoveryListener;
 
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -104,30 +100,8 @@ public class PeerDiscoverer {
                 mDiscoveredServices.add(peer);
 
                 mPeerDiscoveryListener.onPeersDiscovered(mDiscoveredServices);
-
-                test_system_send_the_datas(serviceInfo);
             }
         };
-    }
-
-    /**
-     * TEST PURPOSES ONLY, TO BE REMOVED
-     * @param serviceInfo
-     */
-    private void test_system_send_the_datas(NsdServiceInfo serviceInfo) {
-        try {
-            Socket mServerSocket = new Socket(serviceInfo.getHost(), serviceInfo.getPort());
-
-            OutputStream out = mServerSocket.getOutputStream();
-            PrintWriter printWriter = new PrintWriter(out);
-
-            PlayerInfo playerInfo = new PlayerInfo("DLAT");
-
-            printWriter.print(playerInfo.toJSON());
-            printWriter.flush();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
     }
 
     private void initializeDiscoveryListener() {

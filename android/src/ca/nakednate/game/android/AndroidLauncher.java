@@ -43,18 +43,6 @@ public class AndroidLauncher extends AndroidApplication {
 		initialize(unfriendlyFire, config);
 	}
 
-//	@Override
-//	public void onGameInfoRecieved(GameInfo gameInfo) {
-//		Log.i(LOG_TAG, gameInfo.toJSON());
-//		Toast.makeText(this, gameInfo.toJSON(), Toast.LENGTH_LONG);
-//	}
-//
-//	@Override
-//	public void onPlayerInfoRecieved(PlayerInfo playerInfo) {
-//		Log.i(LOG_TAG, playerInfo.toJSON());
-//		Toast.makeText(this, playerInfo.toJSON(), Toast.LENGTH_LONG);
-//	}
-
 	@Override
 	protected void onDestroy() {
 		mP2PServer.tearDown();
