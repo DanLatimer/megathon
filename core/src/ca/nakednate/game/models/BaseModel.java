@@ -1,13 +1,14 @@
 package ca.nakednate.game.models;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
 
 /**
  * Base class for data models
  */
-public abstract class BaseModel {
+public abstract class BaseModel extends Actor {
 
     private static final String LOG_TAG = BaseModel.class.getSimpleName();
 

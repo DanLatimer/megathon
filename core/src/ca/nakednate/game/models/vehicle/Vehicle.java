@@ -17,8 +17,8 @@ public abstract class Vehicle extends GameObject {
     protected Stack<DeployableWeapon> mDeployableWeapon;
 
     public DeployableWeapon deploy() {
-        if (!mDeployableWeapon.empty()) {
-            return mDeployableWeapon.pop();
+        if (!getDeployableWeapon().empty()) {
+            return getDeployableWeapon().pop();
         }
         return null;
     }
@@ -32,7 +32,7 @@ public abstract class Vehicle extends GameObject {
     }
 
     protected void addDeployableWeapon(DeployableWeapon dw) {
-        mDeployableWeapon.push(dw);
+        getDeployableWeapon().push(dw);
     }
 
     public abstract void addDeployableWeapon(int quantity);
@@ -63,5 +63,12 @@ public abstract class Vehicle extends GameObject {
 
     public void setWeapon(Weapon primary) {
         mWeapon = primary;
+    }
+
+    private Stack<DeployableWeapon> getDeployableWeapon() {
+        if(mDeployableWeapon == null) {
+            mDeployableWeapon = new Stack<DeployableWeapon>();
+        }
+        return mDeployableWeapon;
     }
 }
