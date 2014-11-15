@@ -1,5 +1,6 @@
 package ca.nakednate.p2p;
 
+import android.util.Log;
 import ca.nakednate.game.models.BaseModel;
 import ca.nakednate.game.models.DummyModel;
 import ca.nakednate.game.models.GameInfo;
@@ -13,9 +14,10 @@ import java.io.BufferedReader;
  */
 public class MessageHandler {
 
-    private MainScreenListener mMainScreenListener = null;
+    private static final String LOG_TAG = MessageHandler.class.getSimpleName();
+    private static MainScreenListener mMainScreenListener = null;
 
-    public void setMainScreenListener(MainScreenListener mainScreenListener) {
+    public static void setMainScreenListener(MainScreenListener mainScreenListener) {
         mMainScreenListener = mainScreenListener;
     }
 
@@ -130,7 +132,9 @@ public class MessageHandler {
      */
     private String getLine(BufferedReader bufferedReader) {
         try {
-            return bufferedReader.readLine();
+            String line = bufferedReader.readLine();
+            Log.i(LOG_TAG, "LINE: " + line);
+            return line;
         } catch (Exception e) {
             e.printStackTrace();
         }

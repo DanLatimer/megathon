@@ -1,5 +1,8 @@
 package ca.nakednate.p2p;
 
+import android.app.Activity;
+import android.widget.Toast;
+
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -44,6 +47,15 @@ public class SocketHandler implements Runnable {
                 Socket socket = mServerSocket.accept();
 
                 ClientHandler clientHandler = new ClientHandler(socket, mApp);
+
+                final Activity activity = mApp.getActivity();
+                activity.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(activity, "Client Found!", Toast.LENGTH_LONG);
+                    }
+                });
+
                 // TODO: hold onto runnables and cleanup when dead
 
                 new Thread(clientHandler).start();
