@@ -21,9 +21,9 @@ public class OpponentInitialChoicesEvent extends BaseEvent {
     public Vehicle getVehicle() {
         switch(mVehicle) {
             case JEEP:
-                return new Jeep();
+                return new Jeep(false);
             case TANK:
-                return new Tank();
+                return new Tank(false);
         }
         return null;
     }
