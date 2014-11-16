@@ -8,12 +8,12 @@ import ca.nakednate.game.p2p.listeners.GameStateListener;
 /**
  * Information about a game
  */
-public class GameSate extends BaseModel implements GameStateListener {
+public class GameState extends BaseModel implements GameStateListener {
 
     private Vehicle mMyVehicle;
     private Vehicle mYourVehicle;
 
-    private GameSate() {
+    private GameState() {
         mMyVehicle = null;
         mYourVehicle = null;
 
@@ -21,7 +21,7 @@ public class GameSate extends BaseModel implements GameStateListener {
     }
 
     public void resetGame() {
-        SingletonHolder.INSTANCE = new GameSate();
+        SingletonHolder.INSTANCE = new GameState();
     }
 
     @Override
@@ -42,10 +42,10 @@ public class GameSate extends BaseModel implements GameStateListener {
     }
 
     private static class SingletonHolder {
-        public static GameSate INSTANCE = new GameSate();
+        public static GameState INSTANCE = new GameState();
     }
 
-    public static GameSate getInstance() {
+    public static GameState getInstance() {
         return SingletonHolder.INSTANCE;
     }
 }
