@@ -1,7 +1,11 @@
 package ca.nakednate.game;
 
+import ca.nakednate.game.models.GameState;
+import ca.nakednate.game.models.events.OpponentInitialChoicesEvent;
+import ca.nakednate.game.models.events.VehiclePositionEvent;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.models.weapon.DeployableWeapon;
+import ca.nakednate.game.p2p.ClientHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -20,11 +24,22 @@ public class LevelScreen extends BaseScreen {
     private static final String LOG_TAG = LevelScreen.class.getSimpleName();
 
     private final Vehicle mVehicle;
+    private ClientHandler mOpponent;
+    private long mLastVehicleEvent = 0;
+    private boolean mOpponentAddedToStage = false;
     private OrthogonalTiledMapRenderer mMapRenderer;
 
-    public LevelScreen(final UnfriendlyFire game, Vehicle vehicle) {
+    private GameState gameState = GameState.getInstance();
+
+    public LevelScreen(ClientHandler opponent, final UnfriendlyFire game, Vehicle vehicle) {
         super(game);
         mVehicle = vehicle;
+        mOpponent = opponent;
+
+        OpponentInitialChoicesEvent myInitialChoices = new OpponentInitialChoicesEvent(null, vehicle);
+        opponent.sendJson(OpponentInitialChoicesEvent.class, myInitialChoices.toJSON());
+
+        gameState.setMyVehicle(mVehicle);
     }
 
     @Override
@@ -48,12 +63,37 @@ public class LevelScreen extends BaseScreen {
             mVehicle.fire();
         }
 
+        Vehicle opponentVehicle = gameState.getOpponentVehicle();
+        if(opponentVehicle != null) {
+            if(!mOpponentAddedToStage) {
+                mOpponentAddedToStage = true;
+                getStage().addActor(opponentVehicle);
+            }
+
+            opponentVehicle.setPosition(opponentVehicle.getX(), opponentVehicle.getY());
+        }
+
         getStage().getCamera().position.set(mVehicle.getX() + (mVehicle.getWidth() / 2), mVehicle.getY() + (mVehicle.getHeight() / 2), 0);
         getStage().getCamera().update();
         mMapRenderer.setView((OrthographicCamera) getStage().getCamera());
         mMapRenderer.render();
         getStage().act(Gdx.graphics.getDeltaTime());
         getStage().draw();
+
+        sendMyPosition();
+    }
+
+    private void sendMyPosition() {
+        if(System.currentTimeMillis() - mLastVehicleEvent > 1000) {
+            mLastVehicleEvent = System.currentTimeMillis();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    VehiclePositionEvent myVehiclePosition = new VehiclePositionEvent(null, mVehicle.getX(), mVehicle.getY());
+                    mOpponent.sendJson(VehiclePositionEvent.class, myVehiclePosition.toJSON());
+                }
+            }).start();
+        }
     }
 
     private void addButtons() {
