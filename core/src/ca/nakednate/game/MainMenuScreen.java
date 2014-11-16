@@ -211,7 +211,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
 
         if(mSentRequest != null && mSentRequest.getMessageOriginator() == opponent) {
             if(incomingGameRequestEvent.isAccepted()) {
-                startGame();
+                startGame(opponent);
             }
             mSentRequest = null;
             return;
@@ -220,11 +220,11 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
         promptJoinGame(opponent);
     }
 
-    public void startGame() {
+    public void startGame(final ClientHandler opponent) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                getGame().setScreen(new VehicleSelectionScreen(getGame()));
+                getGame().setScreen(new VehicleSelectionScreen(opponent, getGame()));
             }
         });
     }
@@ -243,7 +243,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
         GameRequestEvent outgoingGameRequestEvent = new GameRequestEvent(null, accepted);
         opponent.sendJson(GameRequestEvent.class, outgoingGameRequestEvent.toJSON());
 
-        startGame();
+        startGame(opponent);
     }
 
     public static void setDiscoveryServiceListener(DiscoveryServiceListener discoveryServiceListener) {

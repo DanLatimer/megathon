@@ -1,6 +1,7 @@
 package ca.nakednate.game.models;
 
 import ca.nakednate.game.models.events.OpponentInitialChoicesEvent;
+import ca.nakednate.game.models.events.VehiclePositionEvent;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.p2p.MessageHandler;
 import ca.nakednate.game.p2p.listeners.GameStateListener;
@@ -11,11 +12,11 @@ import ca.nakednate.game.p2p.listeners.GameStateListener;
 public class GameState extends BaseModel implements GameStateListener {
 
     private Vehicle mMyVehicle;
-    private Vehicle mYourVehicle;
+    private Vehicle mOpponentVehicle;
 
     private GameState() {
         mMyVehicle = null;
-        mYourVehicle = null;
+        mOpponentVehicle = null;
 
         MessageHandler.setGameStateListener(this);
     }
@@ -26,11 +27,21 @@ public class GameState extends BaseModel implements GameStateListener {
 
     @Override
     public void onOpponentInitialChoicesEvent(OpponentInitialChoicesEvent opponentInitialChoicesEvent) {
-        mYourVehicle = opponentInitialChoicesEvent.getVehicle();
+        mOpponentVehicle = opponentInitialChoicesEvent.getVehicle();
     }
 
-    public Vehicle getYourVehicle() {
-        return mYourVehicle;
+    @Override
+    public void onVehiclePositionEvent(VehiclePositionEvent vehiclePositionEvent) {
+        if(mOpponentVehicle == null) {
+            return;
+        }
+
+        mOpponentVehicle.setX(vehiclePositionEvent.getX());
+        mOpponentVehicle.setY(vehiclePositionEvent.getY());
+    }
+
+    public Vehicle getOpponentVehicle() {
+        return mOpponentVehicle;
     }
 
     public Vehicle getMyVehicle() {
