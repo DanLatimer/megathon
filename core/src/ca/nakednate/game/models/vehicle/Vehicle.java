@@ -5,7 +5,9 @@ import ca.nakednate.game.models.weapon.DeployableWeapon;
 import ca.nakednate.game.models.weapon.Weapon;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 import com.badlogic.gdx.utils.Array;
@@ -94,18 +96,18 @@ public abstract class Vehicle extends GameObject {
                 getActions().removeIndex(i);
             }
         }
-        y = Gdx.graphics.getHeight() - y;
 
-        float dx = x - getX();
-        float dy = y - getY();
+        Vector2 coords = new Vector2(getX(), getY());
+        getStage().stageToScreenCoordinates(coords);
+        float dx = x - coords.x;
+        float dy = coords.y - y;
+
         //using breshenhams approximator
         double distance = Math.sqrt((dx*dx)+(dy*dy));
 
         float angle = MathUtils.atan2(dy, dx);
 
         float finalAngle = 0;
-
-        // i hate trig
 
         //0 radian is east
         //0 degrees is north
@@ -125,7 +127,6 @@ public abstract class Vehicle extends GameObject {
             }
         }
 
-
         RotateToAction rotateAction = new RotateToAction();
         rotateAction.setRotation(MathUtils.radiansToDegrees * finalAngle);
         rotateAction.setDuration(0.25f);
@@ -135,9 +136,8 @@ public abstract class Vehicle extends GameObject {
             return;
         }
 
-        MoveToAction moveAction = new MoveToAction();
-        moveAction.setPosition(x, y);
-
+        MoveByAction moveAction = new MoveByAction();
+        moveAction.setAmount(dx, dy);
         moveAction.setDuration((float) (distance / mSpeed));
         addAction(moveAction);
     }
