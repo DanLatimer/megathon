@@ -2,7 +2,6 @@ package ca.nakednate.game;
 
 import ca.nakednate.game.models.GameState;
 import ca.nakednate.game.models.events.OpponentInitialChoicesEvent;
-import ca.nakednate.game.models.events.VehiclePositionEvent;
 import ca.nakednate.game.models.vehicle.Jeep;
 import ca.nakednate.game.models.vehicle.Tank;
 import ca.nakednate.game.models.vehicle.Vehicle;
@@ -100,20 +99,7 @@ public class LevelScreen extends BaseScreen {
         getStage().act(Gdx.graphics.getDeltaTime());
         getStage().draw();
 
-        sendMyPosition();
-    }
-
-    private void sendMyPosition() {
-        if(System.currentTimeMillis() - mLastVehicleEvent > 200) {
-            mLastVehicleEvent = System.currentTimeMillis();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    VehiclePositionEvent myVehiclePosition = new VehiclePositionEvent(null, mVehicle.getGroup().getX(), mVehicle.getGroup().getY(), mVehicle.getGroup().getRotation());
-                    mOpponent.sendJson(VehiclePositionEvent.class, myVehiclePosition.toJSON());
-                }
-            }).start();
-        }
+        mOpponent.sendMyPosition();
     }
 
     private void addButtons() {
