@@ -16,11 +16,12 @@ public class Jeep extends Vehicle {
 
     public Jeep(boolean friendly) {
         setTexture(new Texture(Gdx.files.internal(friendly ? FRIENDLY : ENEMY)));
-        super.init();
+
         setHitPoint(HP);
         setWeapon(new MachineGun());
         addDeployableWeapon(INITIAL_DEPLOYABLE_AMMO);
         setSpeed(SPEED);
+        super.init();
     }
 
     public void addDeployableWeapon(int quantity) {

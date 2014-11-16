@@ -8,6 +8,8 @@ public abstract class Weapon extends GameObject {
     private int mPayLoad;
     private int mAmmo;
 
+
+
     public Weapon(float fireRate, int payLoad, int ammo) {
         setFireRate(fireRate);
         setPayLoad(payLoad);
