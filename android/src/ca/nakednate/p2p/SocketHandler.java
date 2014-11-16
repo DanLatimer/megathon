@@ -41,12 +41,22 @@ public class SocketHandler implements Runnable {
         mPort = mServerSocket.getLocalPort();
     }
 
+    public void teardown() {
+        try {
+            mServerSocket.close();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     @Override
     public void run() {
         initializeServerSocket();
-        while (true) {
+        while (!mServerSocket.isClosed()) {
             try {
                 Socket socket = mServerSocket.accept();
+                socket.setSoTimeout(0);
 
                 ClientHandler clientHandler = new ClientHandler(socket);
 
@@ -60,8 +70,8 @@ public class SocketHandler implements Runnable {
 
                 new Thread(clientHandler).start();
                 ClientManager.addClientHandler(clientHandler);
-            } catch (Exception e) {
-                e.printStackTrace();
+            } catch (Throwable t) {
+                t.printStackTrace();
             }
         }
     }

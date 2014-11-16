@@ -56,4 +56,8 @@ public class ClientManager {
     public static void setDiscoveryServiceListener(DiscoveryServiceListener discoveryServiceListener) {
         mDiscoveryServiceListener = discoveryServiceListener;
     }
+
+    public static void removePeer(Peer peer) {
+        mClientHandlerList.remove(peer);
+    }
 }

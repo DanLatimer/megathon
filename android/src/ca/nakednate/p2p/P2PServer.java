@@ -13,6 +13,7 @@ public class P2PServer {
     private NsdManager mNsdManager;
     private NsdManager.RegistrationListener mRegistrationListener;
     private Activity mActivity;
+    private SocketHandler mSocketHandler;
 
     private boolean isRunning = false;
 
@@ -43,6 +44,10 @@ public class P2PServer {
             return;
         }
 
+        if(mSocketHandler != null) {
+            mSocketHandler.teardown();
+        }
+
         mNsdManager.unregisterService(mRegistrationListener);
         isRunning = false;
     }
@@ -51,8 +56,8 @@ public class P2PServer {
         mRegistrationListener = initializeRegistrationListener();
         mNsdManager = (NsdManager) mActivity.getSystemService(Context.NSD_SERVICE);
 
-        SocketHandler socketHandler = new SocketHandler(this);
-        socketHandler.setSocketOpenListener(new SocketListener() {
+        mSocketHandler = new SocketHandler(this);
+        mSocketHandler.setSocketOpenListener(new SocketListener() {
             @Override
             public void socketOpenFail() {
                 Toast.makeText(mActivity, "Error establishing server socket", Toast.LENGTH_LONG).show();
@@ -73,7 +78,7 @@ public class P2PServer {
                 mNsdManager.registerService(serviceInfo, NsdManager.PROTOCOL_DNS_SD, mRegistrationListener);
             }
         });
-        new Thread(socketHandler).start();
+        new Thread(mSocketHandler).start();
     }
 
     public NsdManager.RegistrationListener initializeRegistrationListener() {

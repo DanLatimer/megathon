@@ -109,6 +109,12 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
     }
 
     @Override
+    public void hide() {
+        MessageHandler.setMainScreenListener(null);
+        ClientManager.setMainScreenListener(null);
+    }
+
+    @Override
     public void onPeersDiscovered(java.util.List<Peer> peers) {
 
         for (Peer peer : peers) {
@@ -141,10 +147,15 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
      * @param clientHandler
      */
     private void sendDisplayNameToClient(ClientHandler clientHandler) {
-        PlayerInfo playerInfo = new PlayerInfo(mDisplayNameTextField.getText());
-        NewPlayerEvent newPlayerEvent = new NewPlayerEvent(null, playerInfo);
+        try {
+            PlayerInfo playerInfo = new PlayerInfo(mDisplayNameTextField.getText());
+            NewPlayerEvent newPlayerEvent = new NewPlayerEvent(null, playerInfo);
 
-        clientHandler.sendJson(NewPlayerEvent.class, newPlayerEvent.toJSON());
+            clientHandler.sendJson(NewPlayerEvent.class, newPlayerEvent.toJSON());
+        } catch (Exception e) {
+            Gdx.app.log(LOG_TAG, "Failed to send display name to client: " + clientHandler);
+            e.printStackTrace();
+        }
     }
 
     /**
