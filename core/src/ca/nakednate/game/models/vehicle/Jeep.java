@@ -4,6 +4,7 @@ import ca.nakednate.game.models.weapon.MachineGun;
 import ca.nakednate.game.models.weapon.Turret;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class Jeep extends Vehicle {
 
@@ -11,11 +12,11 @@ public class Jeep extends Vehicle {
     private static final int INITIAL_DEPLOYABLE_AMMO = 3;
 
     public Jeep() {
+        setTexture(new Texture(Gdx.files.internal("skin/sprites/vehicle_jeep_blue.png")));
+        super.init();
         setHitPoint(HP);
         setWeapon(new MachineGun());
         addDeployableWeapon(INITIAL_DEPLOYABLE_AMMO);
-        setTexture(new Texture(Gdx.files.internal("skin/sprites/vehicle_jeep_red.png")));
-        setBounds(getX(), getY(), getTexture().getWidth(), getTexture().getHeight());
     }
 
     public void addDeployableWeapon(int quantity) {
@@ -23,4 +24,6 @@ public class Jeep extends Vehicle {
             addDeployableWeapon(new Turret());
         }
     }
+
+
 }
