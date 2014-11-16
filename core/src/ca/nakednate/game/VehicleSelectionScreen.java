@@ -3,15 +3,12 @@ package ca.nakednate.game;
 import ca.nakednate.game.models.vehicle.Jeep;
 import ca.nakednate.game.models.vehicle.Tank;
 import ca.nakednate.game.models.vehicle.Vehicle;
+import ca.nakednate.game.p2p.ClientHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
@@ -20,8 +17,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
  */
 public class VehicleSelectionScreen extends BaseScreen {
 
-    public VehicleSelectionScreen(UnfriendlyFire game) {
+    ClientHandler mOpponent;
+
+    public VehicleSelectionScreen(ClientHandler opponent, UnfriendlyFire game) {
         super(game);
+        mOpponent = opponent;
     }
 
     @Override
@@ -60,6 +60,6 @@ public class VehicleSelectionScreen extends BaseScreen {
     }
 
     private void launchGame(Vehicle selectedVehicle) {
-        getGame().setScreen(new LevelScreen(getGame(), selectedVehicle));
+        getGame().setScreen(new LevelScreen(mOpponent, getGame(), selectedVehicle));
     }
 }

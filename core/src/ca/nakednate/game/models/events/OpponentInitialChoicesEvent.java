@@ -14,8 +14,9 @@ public class OpponentInitialChoicesEvent extends BaseEvent {
 
     private VehicleEnum mVehicle;
 
-    public OpponentInitialChoicesEvent(ClientHandler messageOriginator) {
+    public OpponentInitialChoicesEvent(ClientHandler messageOriginator, Vehicle vehicle) {
         super(messageOriginator);
+        setVehicle(vehicle);
     }
 
     public Vehicle getVehicle() {
@@ -28,7 +29,15 @@ public class OpponentInitialChoicesEvent extends BaseEvent {
         return null;
     }
 
-    public void setVehicle(VehicleEnum vehicle) {
-        mVehicle = vehicle;
+    public void setVehicle(Vehicle vehicle) {
+        if(vehicle instanceof Jeep) {
+            mVehicle = VehicleEnum.JEEP;
+            return;
+        }
+
+        if(vehicle instanceof Tank) {
+            mVehicle = VehicleEnum.TANK;
+            return;
+        }
     }
 }
