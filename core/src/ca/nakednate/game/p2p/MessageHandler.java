@@ -153,6 +153,7 @@ public class MessageHandler {
             return line;
         } catch (Exception e) {
             e.printStackTrace();
+            mClientHandler.attemptReconnect();
         }
         return null;
     }

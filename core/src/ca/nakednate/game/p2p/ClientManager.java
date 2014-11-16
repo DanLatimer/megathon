@@ -1,5 +1,6 @@
 package ca.nakednate.game.p2p;
 
+import ca.nakednate.game.p2p.listeners.DiscoveryServiceListener;
 import ca.nakednate.game.p2p.listeners.MainScreenListener;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.util.Map;
 public class ClientManager {
     private static Map<Peer, ClientHandler> mClientHandlerList = new HashMap<Peer, ClientHandler>();
     private static MainScreenListener mMainScreenListener;
+    private static DiscoveryServiceListener mDiscoveryServiceListener;
 
     public static void addClientHandler(ClientHandler clientHandler) {
         mClientHandlerList.put(clientHandler.getPeer(), clientHandler);
@@ -49,5 +51,13 @@ public class ClientManager {
 
     public static void setMainScreenListener(MainScreenListener mainScreenListener) {
         mMainScreenListener = mainScreenListener;
+    }
+
+    public static void setDiscoveryServiceListener(DiscoveryServiceListener discoveryServiceListener) {
+        mDiscoveryServiceListener = discoveryServiceListener;
+    }
+
+    public static void removePeer(Peer peer) {
+        mClientHandlerList.remove(peer);
     }
 }

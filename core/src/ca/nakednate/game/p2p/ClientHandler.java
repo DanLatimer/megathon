@@ -20,6 +20,8 @@ public class ClientHandler implements Runnable {
             mBufferedWriter = new BufferedWriter(new OutputStreamWriter(mClient.getOutputStream()));
         } catch (IOException e) {
             e.printStackTrace();
+            teardown();
+            ClientManager.removePeer(getPeer());
         }
     }
 
@@ -36,9 +38,16 @@ public class ClientHandler implements Runnable {
             mBufferedWriter.write(json);
             mBufferedWriter.newLine();
             mBufferedWriter.flush();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            attemptReconnect();
         }
+    }
+
+    public void attemptReconnect() {
+        teardown();
+        ClientManager.removePeer(getPeer());
+        ClientManager.getOrCreateClientHandler(getPeer());
     }
 
     /**

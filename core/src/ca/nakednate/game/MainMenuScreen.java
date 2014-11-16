@@ -7,15 +7,18 @@ import ca.nakednate.game.p2p.ClientHandler;
 import ca.nakednate.game.p2p.ClientManager;
 import ca.nakednate.game.p2p.MessageHandler;
 import ca.nakednate.game.p2p.Peer;
+import ca.nakednate.game.p2p.listeners.DiscoveryServiceListener;
 import ca.nakednate.game.p2p.listeners.MainScreenListener;
 import ca.nakednate.game.p2p.listeners.PeerDiscoveryListener;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -28,6 +31,8 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
     List<ClientHandler> mClientHandlerListView;
     TextField mDisplayNameTextField;
     GameRequestEvent mSentRequest = null;
+
+    private static DiscoveryServiceListener mDiscoveryServiceListener;
 
     public MainMenuScreen(final UnfriendlyFire game) {
         super(game);
@@ -46,6 +51,19 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
             @Override
             public void keyTyped(TextField textField, char c) {
                 notifyClientHandlersOfNameChange();
+            }
+        });
+
+        TextButton refreshButton = new TextButton("Refresh", getSkin());
+        refreshButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, Actor actor) {
+                if (mDiscoveryServiceListener == null) {
+                    Gdx.app.error(LOG_TAG, "DiscoveryServiceListener not set");
+                    return;
+                }
+
+                mDiscoveryServiceListener.onDiscoveryRefresh();
             }
         });
 
@@ -77,6 +95,8 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
         table.add(gameListLabel).colspan(2);
         table.row();
         table.add(scrollPane).colspan(2);
+        table.row();
+        table.add(refreshButton).colspan(2).center();
 
         Image background = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/title_screen.png"))));
         background.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -86,6 +106,12 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
 
         MessageHandler.setMainScreenListener(this);
         ClientManager.setMainScreenListener(this);
+    }
+
+    @Override
+    public void hide() {
+        MessageHandler.setMainScreenListener(null);
+        ClientManager.setMainScreenListener(null);
     }
 
     @Override
@@ -121,10 +147,15 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
      * @param clientHandler
      */
     private void sendDisplayNameToClient(ClientHandler clientHandler) {
-        PlayerInfo playerInfo = new PlayerInfo(mDisplayNameTextField.getText());
-        NewPlayerEvent newPlayerEvent = new NewPlayerEvent(null, playerInfo);
+        try {
+            PlayerInfo playerInfo = new PlayerInfo(mDisplayNameTextField.getText());
+            NewPlayerEvent newPlayerEvent = new NewPlayerEvent(null, playerInfo);
 
-        clientHandler.sendJson(NewPlayerEvent.class, newPlayerEvent.toJSON());
+            clientHandler.sendJson(NewPlayerEvent.class, newPlayerEvent.toJSON());
+        } catch (Exception e) {
+            Gdx.app.log(LOG_TAG, "Failed to send display name to client: " + clientHandler);
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -186,13 +217,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
             return;
         }
 
-        // TODO: prompt modal dialog, "Do you want to joing the game with X"
-
-        boolean accepted = true; // TODO: get response from modal dialog
-        GameRequestEvent outgoingGameRequestEvent = new GameRequestEvent(null, accepted);
-
-        opponent.sendJson(GameRequestEvent.class, outgoingGameRequestEvent.toJSON());
-        startGame();
+        promptJoinGame(opponent);
     }
 
     public void startGame() {
@@ -202,5 +227,26 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
                 getGame().setScreen(new VehicleSelectionScreen(getGame()));
             }
         });
+    }
+
+    public void promptJoinGame(final ClientHandler opponent) {
+        new Dialog("Some Dialog", getSkin(), "dialog") {
+            protected void result (Object object) {
+                System.out.println("Chosen: " + object);
+                acceptGameRequest(opponent, (Boolean) object);
+            }
+        }.text("Accept game request from " + opponent.getPeer().getDisplayName() + "?").button("Yes", true).button("No", false).key(Input.Keys.ENTER, true)
+                .key(Input.Keys.ESCAPE, false).show(getStage());
+    }
+
+    private void acceptGameRequest(ClientHandler opponent, boolean accepted) {
+        GameRequestEvent outgoingGameRequestEvent = new GameRequestEvent(null, accepted);
+        opponent.sendJson(GameRequestEvent.class, outgoingGameRequestEvent.toJSON());
+
+        startGame();
+    }
+
+    public static void setDiscoveryServiceListener(DiscoveryServiceListener discoveryServiceListener) {
+        mDiscoveryServiceListener = discoveryServiceListener;
     }
 }
