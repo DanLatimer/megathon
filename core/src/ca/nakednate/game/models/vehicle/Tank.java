@@ -9,6 +9,7 @@ public class Tank extends Vehicle {
 
     private static final int HP = 200;
     private static final int INITIAL_DEPLOYABLE_AMMO = 3;
+    private static final int SPEED = 100;
 
     public Tank() {
         setTexture(new Texture(Gdx.files.internal("skin/sprites/vehicle_tank_blue.png")));
@@ -16,6 +17,7 @@ public class Tank extends Vehicle {
         setHitPoint(HP);
         setWeapon(new Cannon());
         addDeployableWeapon(INITIAL_DEPLOYABLE_AMMO);
+        setSpeed(SPEED);
     }
 
     public void addDeployableWeapon(int quantity) {

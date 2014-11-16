@@ -9,6 +9,7 @@ public class Jeep extends Vehicle {
 
     private static final int HP = 100;
     private static final int INITIAL_DEPLOYABLE_AMMO = 3;
+    private static final int SPEED = 500;
 
     public Jeep() {
         setTexture(new Texture(Gdx.files.internal("skin/sprites/vehicle_jeep_blue.png")));
@@ -16,6 +17,7 @@ public class Jeep extends Vehicle {
         setHitPoint(HP);
         setWeapon(new MachineGun());
         addDeployableWeapon(INITIAL_DEPLOYABLE_AMMO);
+        setSpeed(SPEED);
     }
 
     public void addDeployableWeapon(int quantity) {
