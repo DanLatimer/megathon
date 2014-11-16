@@ -11,6 +11,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 
@@ -27,25 +28,25 @@ public class VehicleSelectionScreen extends BaseScreen {
     public void show() {
         super.show();
 
-        Label titleLabel = new Label("Select your vehicle", getSkin());
+        Image jeepImage = new Image(
+                new TextureRegion(new Texture(Gdx.files.internal("skin/sprites/ui_vehicle_select_weasel.png")))
+        );
+        jeepImage.addListener(getLaunchGameClickListener(new Jeep()));
+        jeepImage.setBounds((Gdx.graphics.getWidth() * 0.5f) - jeepImage.getWidth() - 10, 20, jeepImage.getWidth(),
+                jeepImage.getHeight());
 
-        Image jeepImage = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/sprites/vehicle_jeep_red.png"))));
-        Button jeepButton = new Button(jeepImage, getSkin());
-        jeepButton.addListener(getLaunchGameClickListener(new Jeep()));
+        Image tankImage = new Image(
+                new TextureRegion(new Texture(Gdx.files.internal("skin/sprites/ui_vehicle_select_warthog.png")))
+        );
+        tankImage.addListener(getLaunchGameClickListener(new Tank()));
+        tankImage.setBounds((Gdx.graphics.getWidth() * 0.5f) + 10, 20, tankImage.getWidth(), tankImage.getHeight());
 
-        Image tankImage = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/sprites/vehicle_jeep_blue.png"))));
-        Button tankButton = new Button(tankImage, getSkin());
-        tankButton.addListener(getLaunchGameClickListener(new Tank()));
+        Image background = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/vehicle_select.png"))));
+        background.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        Table table = new Table();
-        table.add(titleLabel).colspan(2);
-        table.row();
-        table.add(jeepButton);
-        table.add(tankButton);
-        table.setBounds(0, ((Gdx.graphics.getHeight() / 2) - (table.getHeight() / 2)), Gdx.graphics.getWidth(),
-                table.getHeight());
-
-        getStage().addActor(table);
+        getStage().addActor(background);
+        getStage().addActor(jeepImage);
+        getStage().addActor(tankImage);
     }
 
     private ClickListener getLaunchGameClickListener(final Vehicle vehicle) {
