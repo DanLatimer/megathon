@@ -2,6 +2,7 @@ package ca.nakednate.game.models;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Rectangle;
 
 /**
@@ -29,8 +30,9 @@ public abstract class GameObject extends BaseModel {
     }
 
     protected void init() {
-        setBounds(getX(), getY(), getTexture().getWidth(), getTexture().getHeight());
-        setOrigin(getTexture().getWidth() / 2, getTexture().getHeight() / 2);
+        TextureRegion tr = new TextureRegion(getTexture());
+        setBounds(getX(), getY(), tr.getRegionWidth(), tr.getRegionHeight());
+        setOrigin(tr.getRegionWidth() / 2, tr.getRegionHeight() / 2);
     }
 
     private void updateBounds() {

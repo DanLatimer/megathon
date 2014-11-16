@@ -48,8 +48,8 @@ public class LevelScreen extends BaseScreen {
         TiledMap tiledMap = new TmxMapLoader().load("skin/level_provingGrounds.tmx");
         mMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-        mVehicle.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-        getStage().addActor(mVehicle);
+        mVehicle.getGroup().setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        getStage().addActor(mVehicle.getGroup());
         addButtons();
     }
 
@@ -67,7 +67,7 @@ public class LevelScreen extends BaseScreen {
         if(opponentVehicle != null) {
             if(!mOpponentAddedToStage) {
                 mOpponentAddedToStage = true;
-                getStage().addActor(opponentVehicle);
+                getStage().addActor(opponentVehicle.getGroup());
             }
 
             opponentVehicle.setPosition(opponentVehicle.getX(), opponentVehicle.getY());

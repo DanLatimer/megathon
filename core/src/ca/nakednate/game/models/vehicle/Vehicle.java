@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Action;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveByAction;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
@@ -26,10 +27,18 @@ public abstract class Vehicle extends GameObject {
 
     private static final double SQRT_2 = Math.sqrt(2);
 
+    private Group mGroup = new Group();
+
     protected void init() {
         super.init();
         //we want the pivot to be further back on vehicles
         setOrigin(getTexture().getWidth() / 2, getTexture().getHeight() / 4);
+        mGroup.addActor(this);
+        this.setPosition(0, 0);
+        getWeapon().setPosition(0, 0);
+        getWeapon().setOrigin(getTexture().getWidth() / 2, getTexture().getHeight() / 4);
+        getGroup().setOrigin(getTexture().getWidth() / 2, getTexture().getHeight() / 4);
+        getGroup().addActor(getWeapon());
     }
 
     public DeployableWeapon deploy() {
@@ -88,16 +97,20 @@ public abstract class Vehicle extends GameObject {
         return mDeployableWeapon;
     }
 
+    public Group getGroup() {
+        return mGroup;
+    }
+
     public void moveTo(float x, float y) {
 
-        if (getActions().size > 0) {
-            Array<Action> actions = getActions();
+        if (getGroup().getActions().size > 0) {
+            Array<Action> actions = getGroup().getActions();
             for (int i = 0; i < actions.size; i++) {
-                getActions().removeIndex(i);
+                getGroup().getActions().removeIndex(i);
             }
         }
 
-        Vector2 coords = new Vector2(getX(), getY());
+        Vector2 coords = new Vector2(getGroup().getX(), getGroup().getY());
         getStage().stageToScreenCoordinates(coords);
         float dx = x - coords.x;
         float dy = coords.y - y;
@@ -130,7 +143,7 @@ public abstract class Vehicle extends GameObject {
         RotateToAction rotateAction = new RotateToAction();
         rotateAction.setRotation(MathUtils.radiansToDegrees * finalAngle);
         rotateAction.setDuration(0.25f);
-        addAction(rotateAction);
+        getGroup().addAction(rotateAction);
 
         if (mSpeed == 0 || distance == 0) {
             return;
@@ -139,6 +152,6 @@ public abstract class Vehicle extends GameObject {
         MoveByAction moveAction = new MoveByAction();
         moveAction.setAmount(dx, dy);
         moveAction.setDuration((float) (distance / mSpeed));
-        addAction(moveAction);
+        getGroup().addAction(moveAction);
     }
 }
