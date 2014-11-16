@@ -107,7 +107,7 @@ public class ClientHandler implements Runnable {
     public void sendMyPosition() {
         final Vehicle myVehicle = GameState.getInstance().getMyVehicle();
 
-        if(System.currentTimeMillis() - mLastVehicleEvent > 200) {
+        if(System.currentTimeMillis() - mLastVehicleEvent > 50) {
             mLastVehicleEvent = System.currentTimeMillis();
             new Thread(new Runnable() {
                 @Override

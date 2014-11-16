@@ -1,19 +1,23 @@
 package ca.nakednate.game.models;
 
-import ca.nakednate.game.models.events.OpponentInitialChoicesEvent;
+import ca.nakednate.game.models.events.VehicleChoiceEvent;
 import ca.nakednate.game.models.events.VehiclePositionEvent;
 import ca.nakednate.game.models.vehicle.Tank;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.p2p.ClientHandler;
 import ca.nakednate.game.p2p.MessageHandler;
 import ca.nakednate.game.p2p.listeners.GameStateListener;
+import com.badlogic.gdx.Gdx;
 
 /**
  * Information about a game
  */
 public class GameState extends BaseModel implements GameStateListener {
 
+    private static final String LOG_CAT = GameState.class.getSimpleName();
+
     private Vehicle mMyVehicle;
+    private VehicleChoiceEvent.VehicleEnum mOpponentVehicleEnum;
     private Vehicle mOpponentVehicle;
 
     private GameState() {
@@ -28,8 +32,8 @@ public class GameState extends BaseModel implements GameStateListener {
     }
 
     @Override
-    public void onOpponentInitialChoicesEvent(OpponentInitialChoicesEvent opponentInitialChoicesEvent) {
-        mOpponentVehicle = opponentInitialChoicesEvent.getVehicle();
+    public void onVehicleChoiceEvent(VehicleChoiceEvent vehicleChoiceEvent) {
+        mOpponentVehicleEnum = vehicleChoiceEvent.getVehicle();
     }
 
     @Override
@@ -47,6 +51,16 @@ public class GameState extends BaseModel implements GameStateListener {
     }
 
     public Vehicle getOpponentVehicle() {
+
+        if(mOpponentVehicle == null) {
+            if(mOpponentVehicle == null) {
+                mOpponentVehicleEnum = VehicleChoiceEvent.VehicleEnum.TANK;
+                Gdx.app.log(GameState.LOG_CAT, "Attempted to get the opponent vehicle without recieving it. Faking it.");
+            }
+
+            mOpponentVehicle = VehicleChoiceEvent.getVehicle(mOpponentVehicleEnum);
+        }
+
         return mOpponentVehicle;
     }
 

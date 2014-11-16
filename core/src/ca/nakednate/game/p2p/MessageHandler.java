@@ -66,8 +66,8 @@ public class MessageHandler {
             handleEvent((NewPlayerEvent) event);
         } else if (clazz == GameRequestEvent.class) {
             handleEvent((GameRequestEvent) event);
-        } else if (clazz == OpponentInitialChoicesEvent.class) {
-            handleEvent((OpponentInitialChoicesEvent) event);
+        } else if (clazz == VehicleChoiceEvent.class) {
+            handleEvent((VehicleChoiceEvent) event);
         } else if (clazz == VehiclePositionEvent.class) {
             handleEvent((VehiclePositionEvent) event);
         }
@@ -90,9 +90,9 @@ public class MessageHandler {
         }
     }
 
-    private void handleEvent(OpponentInitialChoicesEvent opponentInitialChoicesEvent) {
+    private void handleEvent(VehicleChoiceEvent vehicleChoiceEvent) {
         if (mGameStateListener != null) {
-            mGameStateListener.onOpponentInitialChoicesEvent(opponentInitialChoicesEvent);
+            mGameStateListener.onVehicleChoiceEvent(vehicleChoiceEvent);
         }
     }
 

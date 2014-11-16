@@ -48,6 +48,10 @@ public class PeerDiscoverer {
 
     // NsdHelper's tearDown method
     public void tearDown() {
+        if(mNsdManager == null) {
+            return;
+        }
+
         mNsdManager.stopServiceDiscovery(mDiscoveryListener);
     }
 
