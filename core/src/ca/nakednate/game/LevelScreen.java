@@ -3,6 +3,11 @@ package ca.nakednate.game;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.models.weapon.DeployableWeapon;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -15,6 +20,7 @@ public class LevelScreen extends BaseScreen {
     private static final String LOG_TAG = LevelScreen.class.getSimpleName();
 
     private final Vehicle mVehicle;
+    private OrthogonalTiledMapRenderer mMapRenderer;
 
     public LevelScreen(final UnfriendlyFire game, Vehicle vehicle) {
         super(game);
@@ -24,6 +30,9 @@ public class LevelScreen extends BaseScreen {
     @Override
     public void show() {
         super.show();
+        TiledMap tiledMap = new TmxMapLoader().load("skin/level_provingGrounds.tmx");
+        mMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
+
         mVehicle.setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         getStage().addActor(mVehicle);
         addButtons();
@@ -31,11 +40,20 @@ public class LevelScreen extends BaseScreen {
 
     @Override
     public void render(float delta) {
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
         if (Gdx.input.isTouched()) {
             mVehicle.moveTo(Gdx.input.getX(), Gdx.input.getY());
             mVehicle.fire();
         }
-        super.render(delta);
+
+        getStage().getCamera().position.set(mVehicle.getX() + (mVehicle.getWidth() / 2), mVehicle.getY() + (mVehicle.getHeight() / 2), 0);
+        getStage().getCamera().update();
+        mMapRenderer.setView((OrthographicCamera) getStage().getCamera());
+        mMapRenderer.render();
+        getStage().act(Gdx.graphics.getDeltaTime());
+        getStage().draw();
     }
 
     private void addButtons() {
