@@ -19,9 +19,9 @@ public abstract class GameObject extends BaseModel {
 
     @Override
     public void draw(Batch batch, float alpha) {
-        batch.draw(getTexture(), this.getX(), getY(), this.getOriginX(), this.getOriginY(), this.getWidth(),
-                this.getHeight(), this.getScaleX(), this.getScaleY(), this.getRotation(), 0, 0,
-                getTexture().getWidth(), getTexture().getHeight(), false, false);
+        batch.draw(getTexture(), getX(), getY(), getOriginX(), getOriginY(), getWidth(),
+                getHeight(), getScaleX(), getScaleY(), getRotation(),
+                0, 0, getTexture().getWidth(), getTexture().getHeight(), false, false);
     }
 
     protected void init() {
