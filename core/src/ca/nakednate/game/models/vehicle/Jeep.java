@@ -4,7 +4,6 @@ import ca.nakednate.game.models.weapon.MachineGun;
 import ca.nakednate.game.models.weapon.Turret;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 
 public class Jeep extends Vehicle {
 
@@ -26,6 +25,5 @@ public class Jeep extends Vehicle {
             addDeployableWeapon(new Turret());
         }
     }
-
 
 }

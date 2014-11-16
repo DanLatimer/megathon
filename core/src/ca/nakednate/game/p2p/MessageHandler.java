@@ -1,9 +1,8 @@
 package ca.nakednate.game.p2p;
 
 import ca.nakednate.game.models.BaseModel;
-import ca.nakednate.game.models.events.BaseEvent;
-import ca.nakednate.game.models.events.DummyEvent;
-import ca.nakednate.game.models.events.NewPlayerEvent;
+import ca.nakednate.game.models.events.*;
+import ca.nakednate.game.p2p.listeners.GameStateListener;
 import ca.nakednate.game.p2p.listeners.MainScreenListener;
 import com.badlogic.gdx.Gdx;
 
@@ -16,15 +15,21 @@ public class MessageHandler {
 
     private static final String LOG_TAG = MessageHandler.class.getSimpleName();
     private static MainScreenListener mMainScreenListener = null;
+    private static GameStateListener mGameStateListener = null;
 
     public static void setMainScreenListener(MainScreenListener mainScreenListener) {
         mMainScreenListener = mainScreenListener;
+    }
+
+    public static void setGameStateListener(GameStateListener gameStateListener) {
+        mGameStateListener = gameStateListener;
     }
 
     private ClientHandler mClientHandler;
 
     public MessageHandler(ClientHandler clientHandler) {
         mClientHandler = clientHandler;
+
     }
 
     /**
@@ -58,7 +63,11 @@ public class MessageHandler {
      */
     private void handleEvent(Class clazz, BaseEvent event) {
         if (clazz == NewPlayerEvent.class) {
-            handleObject((NewPlayerEvent) event);
+            handleEvent((NewPlayerEvent) event);
+        } else if (clazz == GameRequestEvent.class) {
+            handleEvent((GameRequestEvent) event);
+        } else if (clazz == OpponentInitialChoicesEvent.class) {
+            handleEvent((OpponentInitialChoicesEvent) event);
         }
     }
 
@@ -67,9 +76,21 @@ public class MessageHandler {
      *
      * @param newPlayerEvent
      */
-    private void handleObject(NewPlayerEvent newPlayerEvent) {
+    private void handleEvent(NewPlayerEvent newPlayerEvent) {
         if (mMainScreenListener != null) {
             mMainScreenListener.onNewPlayerRecieved(newPlayerEvent);
+        }
+    }
+
+    private void handleEvent(GameRequestEvent gameRequestEvent) {
+        if (mMainScreenListener != null) {
+            mMainScreenListener.onGameRequestEvent(gameRequestEvent);
+        }
+    }
+
+    private void handleEvent(OpponentInitialChoicesEvent gameRequestEvent) {
+        if (mGameStateListener != null) {
+            mGameStateListener.onOpponentInitialChoicesEvent(gameRequestEvent);
         }
     }
 

@@ -12,7 +12,7 @@ public class Tank extends Vehicle {
     private static final int SPEED = 100;
 
     public Tank() {
-        setTexture(new Texture(Gdx.files.internal("skin/vehicle_tank_red.png")));
+        setTexture(new Texture(Gdx.files.internal("skin/sprites/vehicle_tank_blue.png")));
         super.init();
         setHitPoint(HP);
         setWeapon(new Cannon());

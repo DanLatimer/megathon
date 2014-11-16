@@ -132,7 +132,12 @@ public class PeerDiscoverer {
                     // connecting to.
                     Log.d(TAG, "Same machine: " + P2PServer.getServiceName());
                 } else if (service.getServiceName().startsWith(SERVICE_NAME)) {
-                    mNsdManager.resolveService(service, mResolveListener);
+                    try {
+                        mNsdManager.resolveService(service, mResolveListener);
+                    }
+                    catch (IllegalArgumentException iae) {
+                        Log.e(TAG, "IllegalrgumentException in p2p discoverer");
+                    }
                 }
             }
 
