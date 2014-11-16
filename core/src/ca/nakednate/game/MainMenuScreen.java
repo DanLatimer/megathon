@@ -1,6 +1,7 @@
 package ca.nakednate.game;
 
 import ca.nakednate.game.models.PlayerInfo;
+import ca.nakednate.game.models.events.GameRequestEvent;
 import ca.nakednate.game.models.events.NewPlayerEvent;
 import ca.nakednate.game.p2p.ClientHandler;
 import ca.nakednate.game.p2p.ClientManager;
@@ -22,6 +23,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
     private static final String LOG_TAG = MainMenuScreen.class.getSimpleName();
     List<ClientHandler> mClientHandlerListView;
     TextField mDisplayNameTextField;
+    GameRequestEvent mSentRequest = null;
 
     public MainMenuScreen(final UnfriendlyFire game) {
         super(game);
@@ -50,7 +52,14 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-                getGame().setScreen(new VehicleSelectionScreen(getGame()));
+
+                ClientHandler selectedOpponent = mClientHandlerListView.getSelected();
+                GameRequestEvent gameRequestEvent = new GameRequestEvent(null, true);
+                selectedOpponent.sendJson(GameRequestEvent.class, gameRequestEvent.toJSON());
+
+                mSentRequest = gameRequestEvent;
+                // Set message originator so we remember who we asked
+                mSentRequest.setMessageOriginator(selectedOpponent);
             }
         });
         ScrollPane scrollPane = new ScrollPane(mClientHandlerListView, getSkin());
@@ -93,7 +102,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
      * Sets up a client handler/socket with the peer if we don't have one.
      * Sends them our name
      *
-     * @param peer
+     * @param clientHandler
      */
     private void handshake(ClientHandler clientHandler) {
         sendDisplayNameToClient(clientHandler);
@@ -156,5 +165,35 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
         java.util.List<ClientHandler> clientHandlers = new ArrayList<ClientHandler>();
         clientHandlers.addAll(ClientManager.getClientHandlers());
         setClientHandlers(clientHandlers);
+    }
+
+    @Override
+    public void onGameRequestEvent(GameRequestEvent incomingGameRequestEvent) {
+        ClientHandler opponent = incomingGameRequestEvent.getMessageOriginator();
+
+        if(mSentRequest != null && mSentRequest.getMessageOriginator() == opponent) {
+            if(incomingGameRequestEvent.isAccepted()) {
+                startGame();
+            }
+            mSentRequest = null;
+            return;
+        }
+
+        // TODO: prompt modal dialog, "Do you want to joing the game with X"
+
+        boolean accepted = true; // TODO: get response from modal dialog
+        GameRequestEvent outgoingGameRequestEvent = new GameRequestEvent(null, accepted);
+
+        opponent.sendJson(GameRequestEvent.class, outgoingGameRequestEvent.toJSON());
+        startGame();
+    }
+
+    public void startGame() {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                getGame().setScreen(new VehicleSelectionScreen(getGame()));
+            }
+        });
     }
 }

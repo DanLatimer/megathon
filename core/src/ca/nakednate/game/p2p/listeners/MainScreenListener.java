@@ -1,5 +1,6 @@
 package ca.nakednate.game.p2p.listeners;
 
+import ca.nakednate.game.models.events.GameRequestEvent;
 import ca.nakednate.game.models.events.NewPlayerEvent;
 
 /**
@@ -10,5 +11,7 @@ public interface MainScreenListener {
     public void onNewPlayerRecieved(NewPlayerEvent playerInfo);
 
     public void onNewClientAdded();
+
+    public void onGameRequestEvent(GameRequestEvent gameRequestEvent);
 
 }
