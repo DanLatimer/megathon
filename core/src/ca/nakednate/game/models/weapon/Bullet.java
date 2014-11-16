@@ -1,23 +1,24 @@
 package ca.nakednate.game.models.weapon;
 
-import ca.nakednate.game.models.GameObject;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 
-public class Bullet extends GameObject {
+public class Bullet extends Projectile {
 
     private static final float DURATION = 3.0f;
 
-    public Bullet(float x, float y, float range, float radians) {
-        setPosition(x, y);
+    public Bullet(float originX, float originY, float azimuth, float range) {
+        super(originX, originY, azimuth, DURATION, range);
 
-        float dx = MathUtils.cos(radians) * range;
-        float dy = MathUtils.sin(radians) * range;
+        setPosition(originX, originY);
+
+        float endPointX = MathUtils.cos(azimuth) * range;
+        float endPointY = MathUtils.sin(azimuth) * range;
 
         MoveToAction moveToAction = new MoveToAction();
 
-        moveToAction.setPosition(getX() + dx, getY() + dy);
-        moveToAction.setDuration(DURATION);
+        moveToAction.setPosition(getX() + endPointX, getY() + endPointY);
+        moveToAction.setDuration(mSpeed);
 
         addAction(moveToAction);
     }
