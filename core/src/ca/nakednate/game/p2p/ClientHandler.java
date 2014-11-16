@@ -57,4 +57,30 @@ public class ClientHandler implements Runnable {
     public String toString() {
         return mPeer.toString();
     }
+
+    public void teardown() {
+        try {
+            mClient.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        ClientHandler that = (ClientHandler) o;
+
+        if (!getPeer().equals(that.getPeer()))
+            return false;
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return getPeer().hashCode();
+    }
 }
