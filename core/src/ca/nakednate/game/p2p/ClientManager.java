@@ -45,7 +45,7 @@ public class ClientManager {
         return mClientHandlerList;
     }
 
-    public static Collection<ClientHandler> getClientHandlers() {
+    public static synchronized Collection<ClientHandler> getClientHandlers() {
         return mClientHandlerList.values();
     }
 

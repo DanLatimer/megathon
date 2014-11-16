@@ -3,17 +3,19 @@ package ca.nakednate.game;
 import ca.nakednate.game.models.GameState;
 import ca.nakednate.game.models.events.OpponentInitialChoicesEvent;
 import ca.nakednate.game.models.events.VehiclePositionEvent;
+import ca.nakednate.game.models.vehicle.Jeep;
+import ca.nakednate.game.models.vehicle.Tank;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.models.weapon.DeployableWeapon;
 import ca.nakednate.game.p2p.ClientHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -67,14 +69,32 @@ public class LevelScreen extends BaseScreen {
         if(opponentVehicle != null) {
             if(!mOpponentAddedToStage) {
                 mOpponentAddedToStage = true;
+                // TODO: clean up this hacky mess (last hour changes before demo)
+
+                // To get to work we need to instantiate the Vehicle in this thread
+                Vehicle newVehicle = null;
+                if(opponentVehicle instanceof Jeep) {
+                    newVehicle = new Jeep(false);
+                } else if (opponentVehicle instanceof Tank) {
+                    newVehicle = new Tank(false);
+                }
+
+                newVehicle.getGroup().setX(opponentVehicle.getGroup().getX());
+                newVehicle.getGroup().setY(opponentVehicle.getGroup().getY());
+                newVehicle.getGroup().setRotation(opponentVehicle.getGroup().getRotation());
+                opponentVehicle = newVehicle;
+                gameState.setOpponentVehicle(opponentVehicle);
                 getStage().addActor(opponentVehicle.getGroup());
             }
 
-            opponentVehicle.setPosition(opponentVehicle.getX(), opponentVehicle.getY());
+//            opponentVehicle.setPosition(opponentVehicle.getX(), opponentVehicle.getY());
+//            opponentVehicle.setRotation(opponentVehicle.getRotation());
         }
 
-        getStage().getCamera().position.set(mVehicle.getX() + (mVehicle.getWidth() / 2), mVehicle.getY() + (mVehicle.getHeight() / 2), 0);
-        getStage().getCamera().update();
+        OrthographicCamera cam = (OrthographicCamera) getStage().getCamera();
+        cam.position.set(mVehicle.getGroup().getX() + (mVehicle.getGroup().getWidth() / 2), mVehicle.getGroup().getY() + (mVehicle.getGroup().getHeight() / 2), 0);
+        cam.zoom = 2;
+        cam.update();
         mMapRenderer.setView((OrthographicCamera) getStage().getCamera());
         mMapRenderer.render();
         getStage().act(Gdx.graphics.getDeltaTime());
@@ -84,12 +104,12 @@ public class LevelScreen extends BaseScreen {
     }
 
     private void sendMyPosition() {
-        if(System.currentTimeMillis() - mLastVehicleEvent > 1000) {
+        if(System.currentTimeMillis() - mLastVehicleEvent > 200) {
             mLastVehicleEvent = System.currentTimeMillis();
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    VehiclePositionEvent myVehiclePosition = new VehiclePositionEvent(null, mVehicle.getX(), mVehicle.getY());
+                    VehiclePositionEvent myVehiclePosition = new VehiclePositionEvent(null, mVehicle.getGroup().getX(), mVehicle.getGroup().getY(), mVehicle.getGroup().getRotation());
                     mOpponent.sendJson(VehiclePositionEvent.class, myVehiclePosition.toJSON());
                 }
             }).start();
