@@ -29,11 +29,11 @@ public class VehicleSelectionScreen extends BaseScreen {
 
         Label titleLabel = new Label("Select your vehicle", getSkin());
 
-        Image jeepImage = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/vehicle_jeep_red.png"))));
+        Image jeepImage = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/sprites/vehicle_jeep_red.png"))));
         Button jeepButton = new Button(jeepImage, getSkin());
         jeepButton.addListener(getLaunchGameClickListener(new Jeep()));
 
-        Image tankImage = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/vehicle_jeep_blue.png"))));
+        Image tankImage = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/sprites/vehicle_jeep_blue.png"))));
         Button tankButton = new Button(tankImage, getSkin());
         tankButton.addListener(getLaunchGameClickListener(new Tank()));
 
