@@ -2,7 +2,6 @@ package ca.nakednate.p2p;
 
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.net.nsd.NsdManager;
 import android.net.nsd.NsdManager.ResolveListener;
 import android.net.nsd.NsdServiceInfo;
@@ -17,11 +16,6 @@ public class PeerDiscoverer {
 
     public static final String SERVICE_NAME = "ScorchedPlanet";
     public static final String SERVICE_TYPE = "_http._tcp.";
-
-    public static final String EXTRA_P2P_HOST = "EXTRA_P2P_HOST";
-    public static final String EXTRA_P2P_PORT = "EXTRA_P2P_PORT";
-    public static final String EXTRA_P2P_NAME = "EXTRA_P2P_NAME";
-
 
     private PeerDiscoveryListener mPeerDiscoveryListener;
     private NsdManager.DiscoveryListener mDiscoveryListener;
@@ -43,21 +37,6 @@ public class PeerDiscoverer {
 
         mNsdManager = (NsdManager) mActivity.getSystemService(Context.NSD_SERVICE);
         refresh();
-    }
-
-    /**
-     * Run
-     *
-     * @param service
-     */
-    public void onServiceSelected(NsdServiceInfo service) {
-
-        Intent intent = null; // TODO: find libgdx equivelant to intents
-        intent.putExtra(EXTRA_P2P_HOST, service.getHost());
-        intent.putExtra(EXTRA_P2P_NAME, service.getServiceName());
-        intent.putExtra(EXTRA_P2P_PORT, service.getPort());
-
-        // TODO: do the things, aka start the game
     }
 
     /**

@@ -14,9 +14,11 @@ public class P2PServer {
     private NsdManager.RegistrationListener mRegistrationListener;
     private Activity mActivity;
 
+    private boolean isRunning = false;
+
     public P2PServer(Activity activity) {
         mActivity = activity;
-        registerService();
+        setup();
     }
 
     public Activity getActivity() {
@@ -27,8 +29,22 @@ public class P2PServer {
         return mServiceName;
     }
 
+    public void setup() {
+        if(isRunning) {
+            return;
+        }
+
+        registerService();
+        isRunning = true;
+    }
+
     public void tearDown() {
+        if(!isRunning) {
+            return;
+        }
+
         mNsdManager.unregisterService(mRegistrationListener);
+        isRunning = false;
     }
 
     public void registerService() {
