@@ -2,6 +2,7 @@ package ca.nakednate.game.models;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Rectangle;
 
 /**
  * Class for objects that are viewable in the game
@@ -17,16 +18,27 @@ public abstract class GameObject extends BaseModel {
         mTexture = texture;
     }
 
+    private Rectangle mBounds = new Rectangle();
+
     @Override
     public void draw(Batch batch, float alpha) {
         batch.draw(getTexture(), getX(), getY(), getOriginX(), getOriginY(), getWidth(),
                 getHeight(), getScaleX(), getScaleY(), getRotation(),
                 0, 0, getTexture().getWidth(), getTexture().getHeight(), false, false);
+        updateBounds();
     }
 
     protected void init() {
         setBounds(getX(), getY(), getTexture().getWidth(), getTexture().getHeight());
         setOrigin(getTexture().getWidth() / 2, getTexture().getHeight() / 2);
+    }
+
+    private void updateBounds() {
+        mBounds.set(getX(), getY(), getWidth(), getHeight());
+    }
+
+    public Rectangle getBounds() {
+        return mBounds;
     }
 
 }
