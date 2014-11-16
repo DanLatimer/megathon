@@ -3,11 +3,9 @@ package ca.nakednate.game.models.vehicle;
 import ca.nakednate.game.models.GameObject;
 import ca.nakednate.game.models.weapon.DeployableWeapon;
 import ca.nakednate.game.models.weapon.Weapon;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.actions.MoveToAction;
 import com.badlogic.gdx.scenes.scene2d.actions.RotateByAction;
-import com.badlogic.gdx.scenes.scene2d.actions.RotateToAction;
 
 import java.util.Stack;
 
@@ -21,10 +19,11 @@ public abstract class Vehicle extends GameObject {
 
     protected Stack<DeployableWeapon> mDeployableWeapon;
 
-    double sqrt2 = Math.sqrt(2);
+    private static final double SQRT_2 = Math.sqrt(2);
 
     protected void init() {
-        setBounds(getX(),getY(),getTexture().getWidth(),getTexture().getHeight());
+        super.init();
+        //we want the pivot to be further back on vehicles
         setOrigin(getTexture().getWidth() / 2, getTexture().getHeight() / 4);
     }
 
@@ -84,20 +83,17 @@ public abstract class Vehicle extends GameObject {
         return mDeployableWeapon;
     }
 
-    @Override
-    public void draw(Batch batch, float alpha){
-        batch.draw(getTexture(),this.getX(),getY(),this.getOriginX(),this.getOriginY(),this.getWidth(),
-                this.getHeight(),this.getScaleX(), this.getScaleY(),this.getRotation(),0,0,
-                getTexture().getWidth(),getTexture().getHeight(),false,false);
-    }
-
     protected void moveTo(float x, float y, int speed) {
-        MoveToAction moveAction = new MoveToAction();
-        moveAction.setPosition(x, y);
+
         float dx = x - getX();
         float dy = y - getY();
         //using breshenhams approximator
-        double distance = ((sqrt2 - 1)* dx ) + dy;
+        double distance;
+        if (dx > dy) {
+            distance = ((SQRT_2 - 1) * dx) + dy;
+        } else {
+            distance = ((SQRT_2 - 1) * dy) + dx;
+        }
 
         float angleInRad = MathUtils.atan2(dy, dx);
 
@@ -105,6 +101,13 @@ public abstract class Vehicle extends GameObject {
         rotateAction.setAmount(MathUtils.radiansToDegrees * angleInRad);
         rotateAction.setDuration(0.25f);
         addAction(rotateAction);
+
+        if (speed == 0 || distance == 0) {
+            return;
+        }
+
+        MoveToAction moveAction = new MoveToAction();
+        moveAction.setPosition(x, y);
 
         moveAction.setDuration((float) (distance / speed));
         addAction(moveAction);
