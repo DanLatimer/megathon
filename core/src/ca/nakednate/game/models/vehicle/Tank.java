@@ -11,8 +11,11 @@ public class Tank extends Vehicle {
     private static final int INITIAL_DEPLOYABLE_AMMO = 3;
     private static final int SPEED = 100;
 
-    public Tank() {
-        setTexture(new Texture(Gdx.files.internal("skin/sprites/vehicle_tank_blue.png")));
+    private static final String FRIENDLY = "skin/sprites/vehicle_tank_blue.png";
+    private static final String ENEMY = "skin/sprites/vehicle_tank_red.png";
+
+    public Tank(boolean friendly) {
+        setTexture(new Texture(Gdx.files.internal(friendly ? FRIENDLY : ENEMY)));
         super.init();
         setHitPoint(HP);
         setWeapon(new Cannon());
