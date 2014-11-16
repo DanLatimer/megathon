@@ -2,6 +2,7 @@ package ca.nakednate.game;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class UnfriendlyFire extends Game {
@@ -18,7 +19,9 @@ public class UnfriendlyFire extends Game {
     @Override
     public void create() {
 
-        setSkin(new Skin(Gdx.files.internal("skin/uiskin.json")));
+        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"));
+        skin.getFont("default-font").scale(Gdx.graphics.getDensity());
+        setSkin(skin);
 
         setScreen(mMainMenuScreen);
     }

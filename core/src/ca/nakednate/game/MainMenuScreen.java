@@ -10,8 +10,12 @@ import ca.nakednate.game.p2p.Peer;
 import ca.nakednate.game.p2p.listeners.MainScreenListener;
 import ca.nakednate.game.p2p.listeners.PeerDiscoveryListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Array;
 
@@ -33,7 +37,6 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
     public void show() {
         super.show();
 
-        Label welcomeLabel = new Label("Welcome", getSkin());
         Label nameLabel = new Label("Name: ", getSkin());
         Label gameListLabel = new Label("Available Games:", getSkin());
 
@@ -64,17 +67,21 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
         });
         ScrollPane scrollPane = new ScrollPane(mClientHandlerListView, getSkin());
 
-        Table table = new Table();
-        table.add(welcomeLabel).colspan(2).center();
-        table.row();
+        Table table = new Table(getSkin());
+        table.align(Align.top);
+        table.setBounds(Gdx.graphics.getWidth() * 0.05f, 10, Gdx.graphics.getWidth() * 0.9f,
+                Gdx.graphics.getHeight() * 0.55f);
         table.add(nameLabel);
-        table.add(mDisplayNameTextField);
+        table.add(mDisplayNameTextField).width(Gdx.graphics.getWidth() * 0.3f);
         table.row();
-        table.add(gameListLabel).colspan(2).center();
+        table.add(gameListLabel).colspan(2);
         table.row();
-        table.add(scrollPane).colspan(2).center();
-        table.setBounds((Gdx.graphics.getWidth() / 2) - 100, Gdx.graphics.getHeight() / 2, 200, 200);
+        table.add(scrollPane).colspan(2);
 
+        Image background = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/title_screen.png"))));
+        background.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+        getStage().addActor(background);
         getStage().addActor(table);
 
         MessageHandler.setMainScreenListener(this);
