@@ -6,11 +6,13 @@ public class VehiclePositionEvent extends BaseEvent {
 
     float mX;
     float mY;
+    float mHeading;
 
-    public VehiclePositionEvent(ClientHandler messageOriginator, float x, float y) {
+    public VehiclePositionEvent(ClientHandler messageOriginator, float x, float y, float heading) {
         super(messageOriginator);
         mX = x;
         mY = y;
+        mHeading = heading;
     }
 
     @Override
@@ -21,5 +23,9 @@ public class VehiclePositionEvent extends BaseEvent {
     @Override
     public float getY() {
         return mY;
+    }
+
+    public float getHeading() {
+        return mHeading;
     }
 }
