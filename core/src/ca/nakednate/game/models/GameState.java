@@ -42,22 +42,8 @@ public class GameState extends BaseModel implements GameStateListener {
         mOpponentVehicle.getGroup().setY(vehiclePositionEvent.getY());
         mOpponentVehicle.getGroup().setRotation(vehiclePositionEvent.getHeading());
 
-        sendMyPosition(vehiclePositionEvent.getMessageOriginator());
-    }
-
-    // TODO: clean hack
-    private long mLastVehicleEvent = 0;
-    private void sendMyPosition(final ClientHandler opponent) {
-        if(System.currentTimeMillis() - mLastVehicleEvent > 200) {
-            mLastVehicleEvent = System.currentTimeMillis();
-            new Thread(new Runnable() {
-                @Override
-                public void run() {
-                    VehiclePositionEvent myVehiclePosition = new VehiclePositionEvent(null, mMyVehicle.getGroup().getX(), mMyVehicle.getGroup().getY(), mMyVehicle.getGroup().getRotation());
-                    opponent.sendJson(VehiclePositionEvent.class, myVehiclePosition.toJSON());
-                }
-            }).start();
-        }
+        ClientHandler clientHandler = vehiclePositionEvent.getMessageOriginator();
+        clientHandler.sendMyPosition();
     }
 
     public Vehicle getOpponentVehicle() {

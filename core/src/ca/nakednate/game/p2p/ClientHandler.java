@@ -1,5 +1,9 @@
 package ca.nakednate.game.p2p;
 
+import ca.nakednate.game.models.GameState;
+import ca.nakednate.game.models.events.VehiclePositionEvent;
+import ca.nakednate.game.models.vehicle.Vehicle;
+
 import java.io.*;
 import java.net.Socket;
 
@@ -91,5 +95,21 @@ public class ClientHandler implements Runnable {
     @Override
     public int hashCode() {
         return getPeer().hashCode();
+    }
+
+    private long mLastVehicleEvent = 0;
+    public void sendMyPosition() {
+        final Vehicle myVehicle = GameState.getInstance().getMyVehicle();
+
+        if(System.currentTimeMillis() - mLastVehicleEvent > 200) {
+            mLastVehicleEvent = System.currentTimeMillis();
+            new Thread(new Runnable() {
+                @Override
+                public void run() {
+                    VehiclePositionEvent myVehiclePosition = new VehiclePositionEvent(null, myVehicle);
+                    sendJson(VehiclePositionEvent.class, myVehiclePosition.toJSON());
+                }
+            }).start();
+        }
     }
 }
