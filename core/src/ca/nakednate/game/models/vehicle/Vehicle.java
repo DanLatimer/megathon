@@ -101,22 +101,9 @@ public abstract class Vehicle extends GameObject {
         return mGroup;
     }
 
-    public void moveTo(float x, float y) {
+    public void moveTo(float x, float y, float dx, float dy) {
 
-        if (getGroup().getActions().size > 0) {
-            Array<Action> actions = getGroup().getActions();
-            for (int i = 0; i < actions.size; i++) {
-                getGroup().getActions().removeIndex(i);
-            }
-        }
-
-        Vector2 coords = new Vector2(getGroup().getX(), getGroup().getY());
-        getStage().stageToScreenCoordinates(coords);
-        float dx = x - coords.x;
-        float dy = coords.y - y;
-
-        //using breshenhams approximator
-        double distance = Math.sqrt((dx*dx)+(dy*dy));
+        getGroup().setPosition(x, y);
 
         float angle = MathUtils.atan2(dy, dx);
 
@@ -139,19 +126,6 @@ public abstract class Vehicle extends GameObject {
                 finalAngle += MathUtils.PI + halfPI + angle;
             }
         }
-
-        RotateToAction rotateAction = new RotateToAction();
-        rotateAction.setRotation(MathUtils.radiansToDegrees * finalAngle);
-        rotateAction.setDuration(0.25f);
-        getGroup().addAction(rotateAction);
-
-        if (mSpeed == 0 || distance == 0) {
-            return;
-        }
-
-        MoveByAction moveAction = new MoveByAction();
-        moveAction.setAmount(dx, dy);
-        moveAction.setDuration((float) (distance / mSpeed));
-        getGroup().addAction(moveAction);
+        getGroup().setRotation(MathUtils.radiansToDegrees * finalAngle);
     }
 }

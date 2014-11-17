@@ -11,24 +11,33 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObjects;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Touchpad;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
 public class LevelScreen extends BaseScreen {
 
     private static final String LOG_TAG = LevelScreen.class.getSimpleName();
 
+    private static final int COLLISION_LAYER_ID = 1;
+
     private Stage mHudStage;
     private final Vehicle mVehicle;
     private ClientHandler mOpponent;
-    private long mLastVehicleEvent = 0;
     private boolean mOpponentAddedToStage = false;
     private OrthogonalTiledMapRenderer mMapRenderer;
+    private MapObjects mCollisionObjects;
 
     private GameState gameState = GameState.getInstance();
     private Touchpad mMovementTouchPad;
@@ -50,6 +59,9 @@ public class LevelScreen extends BaseScreen {
         TiledMap tiledMap = new TmxMapLoader().load("skin/level_provingGrounds.tmx");
         mMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
+        MapLayer collisionLayer = tiledMap.getLayers().get(COLLISION_LAYER_ID);
+        mCollisionObjects = collisionLayer.getObjects();
+
         mVehicle.getGroup().setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         getStage().addActor(mVehicle.getGroup());
 
@@ -62,9 +74,19 @@ public class LevelScreen extends BaseScreen {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        if (Gdx.input.isTouched()) {
-            mVehicle.moveTo(Gdx.input.getX(), Gdx.input.getY());
-            mVehicle.fire();
+        if (mMovementTouchPad.isTouched()) {
+
+            float dx = mMovementTouchPad.getKnobPercentX() * mVehicle.getSpeed();
+            float dy = mMovementTouchPad.getKnobPercentY() * mVehicle.getSpeed();
+
+            float newX = mVehicle.getGroup().getX() + dx;
+            float newY = mVehicle.getGroup().getY() + dy;
+
+            boolean collided = detectMapCollision(newX, newY);
+
+            if (!collided) {
+                mVehicle.moveTo(newX, newY, dx, dy);
+            }
         }
 
         Vehicle opponentVehicle = gameState.getOpponentVehicle();
@@ -94,7 +116,8 @@ public class LevelScreen extends BaseScreen {
         }
 
         OrthographicCamera cam = (OrthographicCamera) getStage().getCamera();
-        cam.position.set(mVehicle.getGroup().getX() + (mVehicle.getGroup().getWidth() / 2), mVehicle.getGroup().getY() + (mVehicle.getGroup().getHeight() / 2), 0);
+        cam.position.set(mVehicle.getGroup().getX() + (mVehicle.getWidth() / 2),
+                mVehicle.getGroup().getY() + (mVehicle.getHeight() / 2) - (mVehicle.getHeight() / 8), 0);
         cam.zoom = 2;
         cam.update();
         mMapRenderer.setView((OrthographicCamera) getStage().getCamera());
@@ -105,6 +128,24 @@ public class LevelScreen extends BaseScreen {
         mHudStage.draw();
 
         mOpponent.sendMyPosition();
+    }
+
+    private boolean detectMapCollision(float newX, float newY) {
+        Rectangle playerRectangle = new Rectangle(newX, newY, mVehicle.getWidth(), mVehicle.getHeight());
+
+        boolean collided = false;
+        for (RectangleMapObject collisionRectangleObject : mCollisionObjects.getByType(RectangleMapObject.class)) {
+
+            Rectangle collisionRectangle = collisionRectangleObject.getRectangle();
+            if (Intersector.overlaps(playerRectangle, collisionRectangle)) {
+                // collision happened
+                mVehicle.clearActions();
+                collided = true;
+                break;
+            }
+        }
+
+        return collided;
     }
 
     private void setupHud() {

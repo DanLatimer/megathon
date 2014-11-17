@@ -9,7 +9,7 @@ public class Jeep extends Vehicle {
 
     private static final int HP = 100;
     private static final int INITIAL_DEPLOYABLE_AMMO = 3;
-    private static final int SPEED = 500;
+    private static final int SPEED = 25;
 
     private static final String FRIENDLY = "skin/sprites/vehicle_jeep_blue.png";
     private static final String ENEMY = "skin/sprites/vehicle_jeep_red.png";
