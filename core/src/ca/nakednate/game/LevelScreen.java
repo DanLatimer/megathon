@@ -30,7 +30,8 @@ public class LevelScreen extends BaseScreen {
     private static final int COLLISION_LAYER_ID = 1;
 
     private Stage mHudStage;
-    private final Vehicle mVehicle;
+    private Vehicle mVehicle;
+    private Vehicle mOpponentVehicle;
     private ClientHandler mOpponent;
     private OrthogonalTiledMapRenderer mMapRenderer;
     private MapObjects mCollisionObjects;
@@ -41,10 +42,6 @@ public class LevelScreen extends BaseScreen {
     public LevelScreen(final UnfriendlyFire game) {
         super(game);
 
-        mVehicle = gameState.getMyVehicle();
-        mOpponent = gameState.getOpponent();
-
-        gameState.setMyVehicle(mVehicle);
     }
 
     @Override
@@ -53,17 +50,18 @@ public class LevelScreen extends BaseScreen {
         TiledMap tiledMap = new TmxMapLoader().load("skin/level_provingGrounds.tmx");
         mMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-        Vehicle opponentVehicle = gameState.getOpponentVehicle();
-        gameState.setOpponentVehicle(opponentVehicle);
-        getStage().addActor(opponentVehicle.getGroup());
+        mOpponent = gameState.getOpponent();
+
+        mOpponentVehicle = gameState.getOpponentVehicle();
+        getStage().addActor(mOpponentVehicle.getGroup());
+
+        mVehicle = gameState.getMyVehicle();
+        mVehicle.getGroup().setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+        getStage().addActor(mVehicle.getGroup());
 
         MapLayer collisionLayer = tiledMap.getLayers().get(COLLISION_LAYER_ID);
         mCollisionObjects = collisionLayer.getObjects();
 
-        mVehicle.getGroup().setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-        getStage().addActor(mVehicle.getGroup());
-
-        //set up HUD
         setupHud();
     }
 

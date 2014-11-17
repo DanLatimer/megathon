@@ -21,6 +21,7 @@ public class AndroidLauncher extends AndroidApplication implements DiscoveryServ
 
     private P2PServer mP2PServer;
 	private PeerDiscoverer mPeerDiscoverer;
+	private Toast mLastToast;
 
 	UnfriendlyFire mUnfriendlyFire;
 	Handler mHandler = new Handler();
@@ -78,8 +79,17 @@ public class AndroidLauncher extends AndroidApplication implements DiscoveryServ
 	}
 
 	@Override
-	public void onToast(String toast, boolean isLong) {
+	public void onToast(final String toast, final boolean isLong) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if(mLastToast != null) {
+					mLastToast.cancel();
+				}
 
-		Toast.makeText(this, toast, isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+				mLastToast = Toast.makeText(AndroidLauncher.this, toast, isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+				mLastToast.show();
+			}
+		});
 	}
 }

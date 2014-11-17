@@ -1,12 +1,12 @@
 package ca.nakednate.game.models;
 
+import ca.nakednate.game.android.ToastMaster;
 import ca.nakednate.game.models.events.VehicleChoiceEvent;
 import ca.nakednate.game.models.events.VehiclePositionEvent;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.p2p.ClientHandler;
 import ca.nakednate.game.p2p.MessageHandler;
 import ca.nakednate.game.p2p.listeners.GameStateListener;
-import com.badlogic.gdx.Gdx;
 
 /**
  * Information about a game
@@ -23,6 +23,7 @@ public class GameState extends BaseModel implements GameStateListener {
     private GameState() {
         mMyVehicle = null;
         mOpponentVehicle = null;
+        mOpponentVehicleEnum = null;
 
         MessageHandler.setGameStateListener(this);
     }
@@ -53,9 +54,9 @@ public class GameState extends BaseModel implements GameStateListener {
     public Vehicle getOpponentVehicle() {
 
         if(mOpponentVehicle == null) {
-            if(mOpponentVehicle == null) {
+            if(mOpponentVehicleEnum == null) {
                 mOpponentVehicleEnum = VehicleChoiceEvent.VehicleEnum.TANK;
-                Gdx.app.log(GameState.LOG_CAT, "Attempted to get the opponent vehicle without recieving it. Faking it.");
+                ToastMaster.debugToast("Attempted to get the opponent vehicle without receiving it. Faking it.", true);
             }
 
             mOpponentVehicle = VehicleChoiceEvent.getVehicle(mOpponentVehicleEnum);

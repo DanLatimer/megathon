@@ -99,12 +99,18 @@ public class VehicleSelectionScreen extends BaseScreen {
 
         mNameLabel.setText(getTimeRemainingForUser() + "");
 
-        if(getTimeTillNextActivityMillis() <= 0) {
+
+        if(getTimeTillNextActivityMillis() <= 0 || isBothVehiclesChosen()) {
             launchGame();
         }
         if(getRemainingToChooseMillis() <= 0 && !mChoiceSent) {
             chooseVehicleForPlayer();
         }
+    }
+
+    public boolean isBothVehiclesChosen() {
+        GameState gameState = GameState.getInstance();
+        return (gameState.isOpponentVehicleSet()) && (gameState.getMyVehicle() != null);
     }
 
     public void chooseVehicleForPlayer() {

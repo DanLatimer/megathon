@@ -60,6 +60,12 @@ public class ClientHandler implements Runnable {
     public void attemptReconnect() {
         teardown();
         ClientManager.removePeer(getPeer());
+
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            // ignore wakeup
+        }
         ClientManager.getOrCreateClientHandler(getPeer());
     }
 
