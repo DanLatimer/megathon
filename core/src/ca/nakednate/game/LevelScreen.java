@@ -23,6 +23,7 @@ public class LevelScreen extends BaseScreen {
 
     private static final String LOG_TAG = LevelScreen.class.getSimpleName();
 
+    private Stage mHudStage;
     private final Vehicle mVehicle;
     private ClientHandler mOpponent;
     private long mLastVehicleEvent = 0;
@@ -30,6 +31,7 @@ public class LevelScreen extends BaseScreen {
     private OrthogonalTiledMapRenderer mMapRenderer;
 
     private GameState gameState = GameState.getInstance();
+    private Touchpad mMovementTouchPad;
 
     public LevelScreen(ClientHandler opponent, final UnfriendlyFire game, Vehicle vehicle) {
         super(game);
@@ -50,7 +52,9 @@ public class LevelScreen extends BaseScreen {
 
         mVehicle.getGroup().setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         getStage().addActor(mVehicle.getGroup());
-        addButtons();
+
+        //set up HUD
+        setupHud();
     }
 
     @Override
@@ -97,13 +101,34 @@ public class LevelScreen extends BaseScreen {
         mMapRenderer.render();
         getStage().act(Gdx.graphics.getDeltaTime());
         getStage().draw();
+        mHudStage.act(Gdx.graphics.getDeltaTime());
+        mHudStage.draw();
 
         mOpponent.sendMyPosition();
     }
 
+    private void setupHud() {
+        mHudStage = new Stage();
+        Gdx.input.setInputProcessor(mHudStage);
+
+        addTouchPads();
+        addButtons();
+    }
+
+    private void addTouchPads() {
+        mMovementTouchPad = new Touchpad(10, getSkin());
+        mMovementTouchPad.setBounds(100, 100, 200, 200);
+
+        Touchpad aimingTouchPad = new Touchpad(10, getSkin());
+        aimingTouchPad.setBounds(Gdx.graphics.getWidth() - 300, 100, 200, 200);
+
+        mHudStage.addActor(mMovementTouchPad);
+        mHudStage.addActor(aimingTouchPad);
+    }
+
     private void addButtons() {
 
-        final float OFF_BOTTOM_PCT = 0.2f;
+        final float OFF_BOTTOM_PCT = 0.02f;
         final float OFF_CENTER = 100.0f;
 
         TextureAtlas buttonAtlas = new TextureAtlas("ui/button/button.atlas");
@@ -150,7 +175,7 @@ public class LevelScreen extends BaseScreen {
             }
         });
 
-        getStage().addActor(fireButton);
-        getStage().addActor(deployButton);
+        mHudStage.addActor(fireButton);
+        mHudStage.addActor(deployButton);
     }
 }
