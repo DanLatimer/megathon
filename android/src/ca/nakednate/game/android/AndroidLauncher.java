@@ -2,8 +2,10 @@ package ca.nakednate.game.android;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.Toast;
 import ca.nakednate.game.MainMenuScreen;
 import ca.nakednate.game.UnfriendlyFire;
+import ca.nakednate.game.android.listeners.ToastMasterListener;
 import ca.nakednate.game.p2p.ClientHandler;
 import ca.nakednate.game.p2p.ClientManager;
 import ca.nakednate.game.p2p.listeners.DiscoveryServiceListener;
@@ -13,7 +15,7 @@ import ca.nakednate.p2p.PeerDiscoverer;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-public class AndroidLauncher extends AndroidApplication implements DiscoveryServiceListener {
+public class AndroidLauncher extends AndroidApplication implements DiscoveryServiceListener, ToastMasterListener {
 
     private static final String LOG_TAG = AndroidLauncher.class.getSimpleName();
 
@@ -39,6 +41,7 @@ public class AndroidLauncher extends AndroidApplication implements DiscoveryServ
 		initialize(mUnfriendlyFire, config);
 
 		MainMenuScreen.setDiscoveryServiceListener(this);
+		ToastMaster.setToastMasterListener(this);
 	}
 
 	@Override
@@ -72,5 +75,11 @@ public class AndroidLauncher extends AndroidApplication implements DiscoveryServ
 	@Override
 	public void onDiscoveryRefresh() {
 		mPeerDiscoverer.refresh();
+	}
+
+	@Override
+	public void onToast(String toast, boolean isLong) {
+
+		Toast.makeText(this, toast, isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
 	}
 }
