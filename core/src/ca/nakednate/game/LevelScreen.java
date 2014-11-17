@@ -10,7 +10,6 @@ import ca.nakednate.game.p2p.ClientHandler;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -106,29 +105,12 @@ public class LevelScreen extends BaseScreen {
 
         final float OFF_BOTTOM_PCT = 0.2f;
         final float OFF_CENTER = 100.0f;
-        final float BUTTON_WIDTH = 150.0f;
-        final float BUTTON_HEIGHT = 75.0f;
 
-        TextureAtlas buttonAtlas = new TextureAtlas("skin/sprites/button/button.atlas");
+        TextureAtlas buttonAtlas = new TextureAtlas("ui/button.atlas");
+        Skin buttonSkin = new Skin(Gdx.files.internal("ui/button.json"), buttonAtlas);
 
-        Skin buttonSkin = new Skin();
-        buttonSkin.addRegions(buttonAtlas);
-
-        BitmapFont font = new BitmapFont(Gdx.files.internal("skin/default.fnt"), false);
-        TextButton.TextButtonStyle style = new TextButton.TextButtonStyle();
-
-        style.up = buttonSkin.getDrawable("ui_background_button_on");
-        style.down = buttonSkin.getDrawable("ui_background_button_off");
-        style.font = font;
-
-        TextButton fireButton = new TextButton("Fire", style);
-        TextButton deployButton = new TextButton("Deploy", style);
-
-        fireButton.setWidth(BUTTON_WIDTH);
-        fireButton.setHeight(BUTTON_HEIGHT);
-
-        deployButton.setWidth(BUTTON_WIDTH);
-        deployButton.setHeight(BUTTON_HEIGHT);
+        TextButton fireButton = new TextButton("Fire", buttonSkin);
+        TextButton deployButton = new TextButton("Deploy", buttonSkin);
 
         fireButton.setPosition(
                 (Gdx.graphics.getWidth() / 2) - (fireButton.getWidth() / 2) + OFF_CENTER,
