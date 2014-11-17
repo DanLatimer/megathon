@@ -106,8 +106,8 @@ public class LevelScreen extends BaseScreen {
         final float OFF_BOTTOM_PCT = 0.2f;
         final float OFF_CENTER = 100.0f;
 
-        TextureAtlas buttonAtlas = new TextureAtlas("ui/button.atlas");
-        Skin buttonSkin = new Skin(Gdx.files.internal("ui/button.json"), buttonAtlas);
+        TextureAtlas buttonAtlas = new TextureAtlas("ui/button/button.atlas");
+        Skin buttonSkin = new Skin(Gdx.files.internal("ui/button/button.json"), buttonAtlas);
 
         TextButton fireButton = new TextButton("Fire", buttonSkin);
         TextButton deployButton = new TextButton("Deploy", buttonSkin);
