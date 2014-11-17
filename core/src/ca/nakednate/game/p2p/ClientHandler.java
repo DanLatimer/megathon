@@ -3,11 +3,15 @@ package ca.nakednate.game.p2p;
 import ca.nakednate.game.models.GameState;
 import ca.nakednate.game.models.events.VehiclePositionEvent;
 import ca.nakednate.game.models.vehicle.Vehicle;
+import com.badlogic.gdx.Gdx;
 
 import java.io.*;
 import java.net.Socket;
 
 public class ClientHandler implements Runnable {
+
+    private static final String LOG_TAG = ClientHandler.class.getSimpleName();
+
     private Socket mClient;
     private MessageHandler messageHandler;
 
@@ -18,6 +22,11 @@ public class ClientHandler implements Runnable {
     public ClientHandler(Socket client) {
         mClient = client;
         messageHandler = new MessageHandler(this);
+
+        if (mClient == null) {
+            Gdx.app.error(LOG_TAG, "null socket provided!");
+            return;
+        }
 
         try {
             mBufferedReader = new BufferedReader(new InputStreamReader(mClient.getInputStream()));
@@ -86,10 +95,7 @@ public class ClientHandler implements Runnable {
 
         ClientHandler that = (ClientHandler) o;
 
-        if (!getPeer().equals(that.getPeer()))
-            return false;
-
-        return true;
+        return getPeer().equals(that.getPeer());
     }
 
     @Override

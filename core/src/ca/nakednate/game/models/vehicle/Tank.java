@@ -9,7 +9,7 @@ public class Tank extends Vehicle {
 
     private static final int HP = 200;
     private static final int INITIAL_DEPLOYABLE_AMMO = 3;
-    private static final int SPEED = 100;
+    private static final int SPEED = 10;
 
     private static final String FRIENDLY = "skin/sprites/vehicle_tank_blue.png";
     private static final String ENEMY = "skin/sprites/vehicle_tank_red.png";
