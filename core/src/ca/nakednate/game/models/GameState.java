@@ -2,7 +2,6 @@ package ca.nakednate.game.models;
 
 import ca.nakednate.game.models.events.VehicleChoiceEvent;
 import ca.nakednate.game.models.events.VehiclePositionEvent;
-import ca.nakednate.game.models.vehicle.Tank;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.p2p.ClientHandler;
 import ca.nakednate.game.p2p.MessageHandler;
@@ -16,6 +15,7 @@ public class GameState extends BaseModel implements GameStateListener {
 
     private static final String LOG_CAT = GameState.class.getSimpleName();
 
+    private ClientHandler mOpponent;
     private Vehicle mMyVehicle;
     private VehicleChoiceEvent.VehicleEnum mOpponentVehicleEnum;
     private Vehicle mOpponentVehicle;
@@ -39,7 +39,7 @@ public class GameState extends BaseModel implements GameStateListener {
     @Override
     public void onVehiclePositionEvent(VehiclePositionEvent vehiclePositionEvent) {
         if(mOpponentVehicle == null) {
-            mOpponentVehicle = new Tank(false);
+            return;
         }
 
         mOpponentVehicle.getGroup().setX(vehiclePositionEvent.getX());
@@ -64,6 +64,10 @@ public class GameState extends BaseModel implements GameStateListener {
         return mOpponentVehicle;
     }
 
+    public boolean isOpponentVehicleSet() {
+        return (mOpponentVehicleEnum != null);
+    }
+
     public void setOpponentVehicle(Vehicle opponentVehicle) {
         mOpponentVehicle = opponentVehicle;
     }
@@ -76,6 +80,15 @@ public class GameState extends BaseModel implements GameStateListener {
         mMyVehicle = myVehicle;
     }
 
+    public ClientHandler getOpponent() {
+        return mOpponent;
+    }
+
+    public void setOpponent(ClientHandler opponent) {
+        mOpponent = opponent;
+    }
+
+    // Singleton stuff below
     private static class SingletonHolder {
         public static GameState INSTANCE = new GameState();
     }

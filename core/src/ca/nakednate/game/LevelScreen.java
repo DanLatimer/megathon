@@ -1,7 +1,6 @@
 package ca.nakednate.game;
 
 import ca.nakednate.game.models.GameState;
-import ca.nakednate.game.models.events.VehicleChoiceEvent;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.models.weapon.DeployableWeapon;
 import ca.nakednate.game.p2p.ClientHandler;
@@ -39,13 +38,11 @@ public class LevelScreen extends BaseScreen {
     private GameState gameState = GameState.getInstance();
     private Touchpad mMovementTouchPad;
 
-    public LevelScreen(ClientHandler opponent, final UnfriendlyFire game, Vehicle vehicle) {
+    public LevelScreen(final UnfriendlyFire game) {
         super(game);
-        mVehicle = vehicle;
-        mOpponent = opponent;
 
-        VehicleChoiceEvent myInitialChoices = new VehicleChoiceEvent(null, vehicle);
-        opponent.sendJson(VehicleChoiceEvent.class, myInitialChoices.toJSON());
+        mVehicle = gameState.getMyVehicle();
+        mOpponent = gameState.getOpponent();
 
         gameState.setMyVehicle(mVehicle);
     }
