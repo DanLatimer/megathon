@@ -1,55 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <map version="1.0" orientation="orthogonal" renderorder="right-down" width="32" height="32" tilewidth="150" tileheight="150">
- <tileset firstgid="1" name="Proving Grounds" tilewidth="150" tileheight="150">
-   <image width="150" height="150" source="map_tiles/tile_ground_floor.png"/>
-   <image width="150" height="150" source="map_tiles/tile_water_ground.png"/>
-   <image width="150" height="150" source="map_tiles/tile_water_wall_vent.png"/>
-   <image width="150" height="150" source="map_tiles/tile_water_wall.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_bottom_horizontal_left.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_bottom_horizontal_right.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_bottom_horizontal.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_bottom.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_corner_bottomleft.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_corner_bottomright.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_corner_topleft.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_corner_topright.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_horizontal_end_left.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_horizontal_end_right.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_horizontal_straight.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_vertial_end_up.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_vertical_end_bottom.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_vertical_straight.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_3way_vertical_left.png"/>
-   <image width="150" height="150" source="map_tiles/tile_wall_3way_vertical_right.png"/>
+ <tileset firstgid="1" name="proving_grounds" tilewidth="150" tileheight="150">
+  <image source="atlas_proving_grounds.png" width="1340" height="1096"/>
  </tileset>
- <tileset firstgid="21" name="tileset_bridge" tilewidth="900" tileheight="600">
-  <image source="map_tiles/tileset_bridge.png" width="900" height="600"/>
- </tileset>
- <layer name="main" width="32" height="32">
+ <layer name="gameboard" width="32" height="32">
   <data encoding="base64" compression="zlib">
-   eJztl8sKgCAQRW9lRW+w/v9bc5EbTYiLMEqzOOBC54jDzOAC4BBidVjHKIR9aIRQv/pr9G+Ia3kn/ScRp0dcywNx7wtx//kShyW8d635V39ev0nQJdbmJdbbntRZj/e3BKGfiVHK+//Zz/Rfllz9l50/ufovO39KzL/61a9+Of8Euf/37LgBOQkOoQ==
-  </data>
- </layer>
- <layer name="bridge" width="32" height="32">
-  <data encoding="base64" compression="zlib">
-   eJztzgENAAAIA6CXsH9VY1w3SEACAHDftAMA8NwCqTwAFg==
+   eJztl0kOwjAMRc08DxXtggIrYAX3P1+9IBIKn1b9uBihLN4mUvLkQbLTE5GhE30lUyZOZA+2TgT/2olf8O/ltS9GHbgGwFMK7r9pB/4x8NT1X9tYmnK2AQ62/igWJmesH8XSlDNLvxXJz/l3ShGRf+BfRizA2fP5QTlFHMHdd+8Egn/VkjPwX4h32PzflGvE/Yv19+6/5Pf1M/PP0m85/5j9h5l//7T/MFjuP1Ykf/LPxO//PVcqZMU1Ew==
   </data>
  </layer>
  <objectgroup name="collision">
-  <object x="1950" y="1274" width="896" height="226"/>
-  <object x="2" y="2" width="4796" height="298"/>
-  <object x="4654" y="304" width="146" height="1192"/>
-  <object x="4054" y="1500" width="748" height="144"/>
-  <object x="4654" y="1648" width="142" height="3016"/>
-  <object x="4054" y="3156" width="600" height="142"/>
-  <object x="6" y="304" width="140" height="4488"/>
-  <object x="150" y="4650" width="4646" height="144"/>
-  <object x="150" y="3144" width="600" height="158"/>
-  <object x="1952" y="3302" width="896" height="148"/>
-  <object x="142" y="2258" width="1870" height="288"/>
-  <object x="1988" y="2182" width="36" height="412"/>
-  <object x="2776" y="2180" width="44" height="408"/>
-  <object x="2822" y="2256" width="1828" height="290"/>
-  <object x="148" y="1494" width="600" height="158"/>
+  <object x="12.1212" y="9.09091" width="4778.79" height="284.848"/>
+  <object x="4660.61" y="300" width="128.364" height="4492.36"/>
+  <object x="12" y="4660" width="4648" height="136"/>
+  <object x="16" y="292" width="128" height="4372"/>
+  <object x="140" y="3604" width="748" height="164"/>
+  <object x="1954" y="3282" width="896" height="164"/>
+  <object x="3896" y="3590" width="760" height="164"/>
+  <object x="1956" y="1186" width="896" height="164"/>
+  <object x="140" y="882" width="756" height="160"/>
+  <object x="3902" y="880" width="756" height="160"/>
+  <object x="152" y="2104" width="1892" height="300"/>
+  <object x="2766" y="2106" width="1892" height="300"/>
  </objectgroup>
 </map>
