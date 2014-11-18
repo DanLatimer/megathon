@@ -36,7 +36,7 @@ public class LevelScreen extends BaseScreen {
     private OrthogonalTiledMapRenderer mMapRenderer;
     private MapObjects mCollisionObjects;
 
-    private GameState gameState = GameState.getInstance();
+    private GameState mGameState = GameState.getInstance();
     private Touchpad mMovementTouchPad;
 
     public LevelScreen(final UnfriendlyFire game) {
@@ -50,12 +50,12 @@ public class LevelScreen extends BaseScreen {
         TiledMap tiledMap = new TmxMapLoader().load("skin/level_provingGrounds.tmx");
         mMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-        mOpponent = gameState.getOpponent();
+        mOpponent = mGameState.getOpponent();
 
-        mOpponentVehicle = gameState.getOpponentVehicle();
+        mOpponentVehicle = mGameState.getOpponentVehicle();
         getStage().addActor(mOpponentVehicle.getGroup());
 
-        mVehicle = gameState.getMyVehicle();
+        mVehicle = mGameState.getMyVehicle();
         mVehicle.getGroup().setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         getStage().addActor(mVehicle.getGroup());
 

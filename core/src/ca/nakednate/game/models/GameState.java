@@ -13,7 +13,7 @@ import ca.nakednate.game.p2p.listeners.GameStateListener;
  */
 public class GameState extends BaseModel implements GameStateListener {
 
-    private static final String LOG_CAT = GameState.class.getSimpleName();
+    private static final String LOG_TAG = GameState.class.getSimpleName();
 
     private ClientHandler mOpponent;
     private Vehicle mMyVehicle;
