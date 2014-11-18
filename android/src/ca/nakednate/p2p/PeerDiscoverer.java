@@ -48,6 +48,10 @@ public class PeerDiscoverer {
 
     // NsdHelper's tearDown method
     public void tearDown() {
+        if(mNsdManager == null) {
+            return;
+        }
+
         mNsdManager.stopServiceDiscovery(mDiscoveryListener);
     }
 
@@ -71,14 +75,23 @@ public class PeerDiscoverer {
             }
 
             @Override
-            public void onServiceResolved(NsdServiceInfo serviceInfo) {
+            public void onServiceResolved(final NsdServiceInfo serviceInfo) {
                 Log.e(TAG, "Resolve Succeeded. " + serviceInfo);
 
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            // It's okay to be woken up
+                        }
+                        Peer peer = new Peer(serviceInfo.getHost(), serviceInfo.getPort());
+                        mDiscoveredServices.add(peer);
+                        mPeerDiscoveryListener.onPeersDiscovered(mDiscoveredServices);
+                    }
+                }).start();
 
-                Peer peer = new Peer(serviceInfo.getHost(), serviceInfo.getPort());
-                mDiscoveredServices.add(peer);
-
-                mPeerDiscoveryListener.onPeersDiscovered(mDiscoveredServices);
             }
         };
     }
@@ -126,7 +139,8 @@ public class PeerDiscoverer {
                 // Internal bookkeeping code goes here.
                 Log.e(TAG, "service lost " + serviceInfo);
 
-                mDiscoveredServices.remove(serviceInfo);
+                Peer peer = new Peer(serviceInfo.getHost(), serviceInfo.getPort());
+                mDiscoveredServices.remove(peer);
             }
 
             @Override

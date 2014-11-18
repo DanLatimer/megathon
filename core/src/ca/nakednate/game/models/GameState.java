@@ -1,8 +1,8 @@
 package ca.nakednate.game.models;
 
-import ca.nakednate.game.models.events.OpponentInitialChoicesEvent;
+import ca.nakednate.game.android.ToastMaster;
+import ca.nakednate.game.models.events.VehicleChoiceEvent;
 import ca.nakednate.game.models.events.VehiclePositionEvent;
-import ca.nakednate.game.models.vehicle.Tank;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.p2p.ClientHandler;
 import ca.nakednate.game.p2p.MessageHandler;
@@ -13,12 +13,17 @@ import ca.nakednate.game.p2p.listeners.GameStateListener;
  */
 public class GameState extends BaseModel implements GameStateListener {
 
+    private static final String LOG_TAG = GameState.class.getSimpleName();
+
+    private ClientHandler mOpponent;
     private Vehicle mMyVehicle;
+    private VehicleChoiceEvent.VehicleEnum mOpponentVehicleEnum;
     private Vehicle mOpponentVehicle;
 
     private GameState() {
         mMyVehicle = null;
         mOpponentVehicle = null;
+        mOpponentVehicleEnum = null;
 
         MessageHandler.setGameStateListener(this);
     }
@@ -28,14 +33,14 @@ public class GameState extends BaseModel implements GameStateListener {
     }
 
     @Override
-    public void onOpponentInitialChoicesEvent(OpponentInitialChoicesEvent opponentInitialChoicesEvent) {
-        mOpponentVehicle = opponentInitialChoicesEvent.getVehicle();
+    public void onVehicleChoiceEvent(VehicleChoiceEvent vehicleChoiceEvent) {
+        mOpponentVehicleEnum = vehicleChoiceEvent.getVehicle();
     }
 
     @Override
     public void onVehiclePositionEvent(VehiclePositionEvent vehiclePositionEvent) {
         if(mOpponentVehicle == null) {
-            mOpponentVehicle = new Tank(false);
+            return;
         }
 
         mOpponentVehicle.getGroup().setX(vehiclePositionEvent.getX());
@@ -47,7 +52,21 @@ public class GameState extends BaseModel implements GameStateListener {
     }
 
     public Vehicle getOpponentVehicle() {
+
+        if(mOpponentVehicle == null) {
+            if(mOpponentVehicleEnum == null) {
+                mOpponentVehicleEnum = VehicleChoiceEvent.VehicleEnum.TANK;
+                ToastMaster.debugToast("Attempted to get the opponent vehicle without receiving it. Faking it.", true);
+            }
+
+            mOpponentVehicle = VehicleChoiceEvent.getVehicle(mOpponentVehicleEnum);
+        }
+
         return mOpponentVehicle;
+    }
+
+    public boolean isOpponentVehicleSet() {
+        return (mOpponentVehicleEnum != null);
     }
 
     public void setOpponentVehicle(Vehicle opponentVehicle) {
@@ -62,6 +81,15 @@ public class GameState extends BaseModel implements GameStateListener {
         mMyVehicle = myVehicle;
     }
 
+    public ClientHandler getOpponent() {
+        return mOpponent;
+    }
+
+    public void setOpponent(ClientHandler opponent) {
+        mOpponent = opponent;
+    }
+
+    // Singleton stuff below
     private static class SingletonHolder {
         public static GameState INSTANCE = new GameState();
     }

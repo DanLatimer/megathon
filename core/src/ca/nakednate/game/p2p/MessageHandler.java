@@ -1,5 +1,6 @@
 package ca.nakednate.game.p2p;
 
+import ca.nakednate.game.android.ToastMaster;
 import ca.nakednate.game.models.BaseModel;
 import ca.nakednate.game.models.events.*;
 import ca.nakednate.game.p2p.listeners.GameStateListener;
@@ -66,33 +67,45 @@ public class MessageHandler {
             handleEvent((NewPlayerEvent) event);
         } else if (clazz == GameRequestEvent.class) {
             handleEvent((GameRequestEvent) event);
-        } else if (clazz == OpponentInitialChoicesEvent.class) {
-            handleEvent((OpponentInitialChoicesEvent) event);
+        } else if (clazz == VehicleChoiceEvent.class) {
+            handleEvent((VehicleChoiceEvent) event);
         } else if (clazz == VehiclePositionEvent.class) {
             handleEvent((VehiclePositionEvent) event);
         }
     }
 
     /**
-     * Handles PlayerInfo objects
+     * Event when we get a display name
      *
      * @param newPlayerEvent
      */
     private void handleEvent(NewPlayerEvent newPlayerEvent) {
         if (mMainScreenListener != null) {
+            ToastMaster.debugToast("New Player Event: " + newPlayerEvent.getPlayerInfo().getDisplayName(), false);
             mMainScreenListener.onNewPlayerRecieved(newPlayerEvent);
         }
     }
 
+    /**
+     * Event where opponent requests game
+     *
+     * @param gameRequestEvent
+     */
     private void handleEvent(GameRequestEvent gameRequestEvent) {
         if (mMainScreenListener != null) {
             mMainScreenListener.onGameRequestEvent(gameRequestEvent);
         }
     }
 
-    private void handleEvent(OpponentInitialChoicesEvent opponentInitialChoicesEvent) {
+    /**
+     * Opponent telling you what vehicle they chose
+     *
+     * @param vehicleChoiceEvent
+     */
+    private void handleEvent(VehicleChoiceEvent vehicleChoiceEvent) {
         if (mGameStateListener != null) {
-            mGameStateListener.onOpponentInitialChoicesEvent(opponentInitialChoicesEvent);
+            ToastMaster.debugToast("New Vehicle Choice Event: " + vehicleChoiceEvent.getVehicle(), false);
+            mGameStateListener.onVehicleChoiceEvent(vehicleChoiceEvent);
         }
     }
 

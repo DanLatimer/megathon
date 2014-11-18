@@ -5,7 +5,7 @@ import ca.nakednate.game.models.vehicle.Tank;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.p2p.ClientHandler;
 
-public class OpponentInitialChoicesEvent extends BaseEvent {
+public class VehicleChoiceEvent extends BaseEvent {
 
     public enum VehicleEnum {
         JEEP,
@@ -14,13 +14,17 @@ public class OpponentInitialChoicesEvent extends BaseEvent {
 
     private VehicleEnum mVehicle;
 
-    public OpponentInitialChoicesEvent(ClientHandler messageOriginator, Vehicle vehicle) {
+    public VehicleChoiceEvent(ClientHandler messageOriginator, Vehicle vehicle) {
         super(messageOriginator);
         setVehicle(vehicle);
     }
 
-    public Vehicle getVehicle() {
-        switch(mVehicle) {
+    public VehicleEnum getVehicle() {
+        return mVehicle;
+    }
+
+    public static Vehicle getVehicle(VehicleEnum vehicle) {
+        switch(vehicle) {
             case JEEP:
                 return new Jeep(false);
             case TANK:

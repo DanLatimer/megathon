@@ -2,8 +2,10 @@ package ca.nakednate.game.android;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.widget.Toast;
 import ca.nakednate.game.MainMenuScreen;
 import ca.nakednate.game.UnfriendlyFire;
+import ca.nakednate.game.android.listeners.ToastMasterListener;
 import ca.nakednate.game.p2p.ClientHandler;
 import ca.nakednate.game.p2p.ClientManager;
 import ca.nakednate.game.p2p.listeners.DiscoveryServiceListener;
@@ -13,12 +15,13 @@ import ca.nakednate.p2p.PeerDiscoverer;
 import com.badlogic.gdx.backends.android.AndroidApplication;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 
-public class AndroidLauncher extends AndroidApplication implements DiscoveryServiceListener {
+public class AndroidLauncher extends AndroidApplication implements DiscoveryServiceListener, ToastMasterListener {
 
     private static final String LOG_TAG = AndroidLauncher.class.getSimpleName();
 
     private P2PServer mP2PServer;
 	private PeerDiscoverer mPeerDiscoverer;
+	private Toast mLastToast;
 
 	UnfriendlyFire mUnfriendlyFire;
 	Handler mHandler = new Handler();
@@ -35,10 +38,11 @@ public class AndroidLauncher extends AndroidApplication implements DiscoveryServ
         mP2PServer = new P2PServer(this);
 		mUnfriendlyFire = new UnfriendlyFire();
 
-
 		initialize(mUnfriendlyFire, config);
 
+		AndroidService.setAndroidServiceListener(new AndroidServiceListener(this));
 		MainMenuScreen.setDiscoveryServiceListener(this);
+		ToastMaster.setToastMasterListener(this);
 	}
 
 	@Override
@@ -72,5 +76,20 @@ public class AndroidLauncher extends AndroidApplication implements DiscoveryServ
 	@Override
 	public void onDiscoveryRefresh() {
 		mPeerDiscoverer.refresh();
+	}
+
+	@Override
+	public void onToast(final String toast, final boolean isLong) {
+		runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				if(mLastToast != null) {
+					mLastToast.cancel();
+				}
+
+				mLastToast = Toast.makeText(AndroidLauncher.this, toast, isLong ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT);
+				mLastToast.show();
+			}
+		});
 	}
 }

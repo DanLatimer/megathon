@@ -1,9 +1,6 @@
 package ca.nakednate.game;
 
 import ca.nakednate.game.models.GameState;
-import ca.nakednate.game.models.events.OpponentInitialChoicesEvent;
-import ca.nakednate.game.models.vehicle.Jeep;
-import ca.nakednate.game.models.vehicle.Tank;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.models.weapon.DeployableWeapon;
 import ca.nakednate.game.p2p.ClientHandler;
@@ -33,24 +30,18 @@ public class LevelScreen extends BaseScreen {
     private static final int COLLISION_LAYER_ID = 1;
 
     private Stage mHudStage;
-    private final Vehicle mVehicle;
+    private Vehicle mVehicle;
+    private Vehicle mOpponentVehicle;
     private ClientHandler mOpponent;
-    private boolean mOpponentAddedToStage = false;
     private OrthogonalTiledMapRenderer mMapRenderer;
     private MapObjects mCollisionObjects;
 
-    private GameState gameState = GameState.getInstance();
+    private GameState mGameState = GameState.getInstance();
     private Touchpad mMovementTouchPad;
 
-    public LevelScreen(ClientHandler opponent, final UnfriendlyFire game, Vehicle vehicle) {
+    public LevelScreen(final UnfriendlyFire game) {
         super(game);
-        mVehicle = vehicle;
-        mOpponent = opponent;
 
-        OpponentInitialChoicesEvent myInitialChoices = new OpponentInitialChoicesEvent(null, vehicle);
-        opponent.sendJson(OpponentInitialChoicesEvent.class, myInitialChoices.toJSON());
-
-        gameState.setMyVehicle(mVehicle);
     }
 
     @Override
@@ -59,13 +50,18 @@ public class LevelScreen extends BaseScreen {
         TiledMap tiledMap = new TmxMapLoader().load("skin/level_provingGrounds.tmx");
         mMapRenderer = new OrthogonalTiledMapRenderer(tiledMap);
 
-        MapLayer collisionLayer = tiledMap.getLayers().get(COLLISION_LAYER_ID);
-        mCollisionObjects = collisionLayer.getObjects();
+        mOpponent = mGameState.getOpponent();
 
+        mOpponentVehicle = mGameState.getOpponentVehicle();
+        getStage().addActor(mOpponentVehicle.getGroup());
+
+        mVehicle = mGameState.getMyVehicle();
         mVehicle.getGroup().setPosition(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
         getStage().addActor(mVehicle.getGroup());
 
-        //set up HUD
+        MapLayer collisionLayer = tiledMap.getLayers().get(COLLISION_LAYER_ID);
+        mCollisionObjects = collisionLayer.getObjects();
+
         setupHud();
     }
 
@@ -88,33 +84,7 @@ public class LevelScreen extends BaseScreen {
                 mVehicle.moveTo(newX, newY, dx, dy);
             }
         }
-
-        Vehicle opponentVehicle = gameState.getOpponentVehicle();
-        if(opponentVehicle != null) {
-            if(!mOpponentAddedToStage) {
-                mOpponentAddedToStage = true;
-                // TODO: clean up this hacky mess (last hour changes before demo)
-
-                // To get to work we need to instantiate the Vehicle in this thread
-                Vehicle newVehicle = null;
-                if(opponentVehicle instanceof Jeep) {
-                    newVehicle = new Jeep(false);
-                } else if (opponentVehicle instanceof Tank) {
-                    newVehicle = new Tank(false);
-                }
-
-                newVehicle.getGroup().setX(opponentVehicle.getGroup().getX());
-                newVehicle.getGroup().setY(opponentVehicle.getGroup().getY());
-                newVehicle.getGroup().setRotation(opponentVehicle.getGroup().getRotation());
-                opponentVehicle = newVehicle;
-                gameState.setOpponentVehicle(opponentVehicle);
-                getStage().addActor(opponentVehicle.getGroup());
-            }
-
-//            opponentVehicle.setPosition(opponentVehicle.getX(), opponentVehicle.getY());
-//            opponentVehicle.setRotation(opponentVehicle.getRotation());
-        }
-
+        
         OrthographicCamera cam = (OrthographicCamera) getStage().getCamera();
         cam.position.set(mVehicle.getGroup().getX() + (mVehicle.getWidth() / 2),
                 mVehicle.getGroup().getY() + (mVehicle.getHeight() / 2) - (mVehicle.getHeight() / 8), 0);

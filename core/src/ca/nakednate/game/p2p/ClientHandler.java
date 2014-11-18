@@ -60,6 +60,12 @@ public class ClientHandler implements Runnable {
     public void attemptReconnect() {
         teardown();
         ClientManager.removePeer(getPeer());
+
+        try {
+            Thread.sleep(50);
+        } catch (InterruptedException e) {
+            // ignore wakeup
+        }
         ClientManager.getOrCreateClientHandler(getPeer());
     }
 
@@ -107,7 +113,7 @@ public class ClientHandler implements Runnable {
     public void sendMyPosition() {
         final Vehicle myVehicle = GameState.getInstance().getMyVehicle();
 
-        if(System.currentTimeMillis() - mLastVehicleEvent > 200) {
+        if(System.currentTimeMillis() - mLastVehicleEvent > 50) {
             mLastVehicleEvent = System.currentTimeMillis();
             new Thread(new Runnable() {
                 @Override
