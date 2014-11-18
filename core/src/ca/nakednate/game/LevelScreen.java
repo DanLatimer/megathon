@@ -38,6 +38,7 @@ public class LevelScreen extends BaseScreen {
 
     private GameState mGameState = GameState.getInstance();
     private Touchpad mMovementTouchPad;
+    private Touchpad mAimingTouchPad;
 
     public LevelScreen(final UnfriendlyFire game) {
         super(game);
@@ -83,6 +84,13 @@ public class LevelScreen extends BaseScreen {
             if (!collided) {
                 mVehicle.moveTo(newX, newY, dx, dy);
             }
+        }
+
+        if (mAimingTouchPad.isTouched()) {
+            float dx = mAimingTouchPad.getKnobPercentX();
+            float dy = mAimingTouchPad.getKnobPercentY();
+
+            mVehicle.moveWeapon(dx, dy);
         }
         
         OrthographicCamera cam = (OrthographicCamera) getStage().getCamera();
@@ -130,11 +138,11 @@ public class LevelScreen extends BaseScreen {
         mMovementTouchPad = new Touchpad(10, getSkin());
         mMovementTouchPad.setBounds(100, 100, 200, 200);
 
-        Touchpad aimingTouchPad = new Touchpad(10, getSkin());
-        aimingTouchPad.setBounds(Gdx.graphics.getWidth() - 300, 100, 200, 200);
+        mAimingTouchPad = new Touchpad(10, getSkin());
+        mAimingTouchPad.setBounds(Gdx.graphics.getWidth() - 300, 100, 200, 200);
 
         mHudStage.addActor(mMovementTouchPad);
-        mHudStage.addActor(aimingTouchPad);
+        mHudStage.addActor(mAimingTouchPad);
     }
 
     private void addButtons() {

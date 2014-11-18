@@ -102,9 +102,16 @@ public abstract class Vehicle extends GameObject {
     }
 
     public void moveTo(float x, float y, float dx, float dy) {
-
         getGroup().setPosition(x, y);
+        getGroup().setRotation(getAngle(dx, dy));
+    }
 
+    public void moveWeapon(float dx, float dy) {
+        float gunAngle = getAngle(dx, dy) - getGroup().getRotation();
+        getWeapon().setRotation(gunAngle);
+    }
+
+    private float getAngle(float dx, float dy) {
         float angle = MathUtils.atan2(dy, dx);
 
         float finalAngle = 0;
@@ -126,6 +133,7 @@ public abstract class Vehicle extends GameObject {
                 finalAngle += MathUtils.PI + halfPI + angle;
             }
         }
-        getGroup().setRotation(MathUtils.radiansToDegrees * finalAngle);
+
+        return MathUtils.radiansToDegrees * finalAngle;
     }
 }
