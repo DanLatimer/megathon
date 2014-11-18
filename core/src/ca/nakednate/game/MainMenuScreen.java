@@ -98,7 +98,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
         table.row();
         table.add(gameListLabel).colspan(2);
         table.row();
-        table.add(scrollPane).colspan(2);
+        table.add(scrollPane).width(Gdx.graphics.getWidth() * 0.5f).colspan(2);
         table.row();
         table.add(refreshButton).colspan(2).center();
 
@@ -110,6 +110,17 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
 
         MessageHandler.setMainScreenListener(this);
         ClientManager.setMainScreenListener(this);
+    }
+
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+
+        int numberClientsInList = mClientHandlerListView.getItems().size;
+        int numberClientHandlers = ClientManager.getClientHandlers().size();
+        if(numberClientsInList != numberClientHandlers) {
+            syncClientHandlerListView();
+        }
     }
 
     @Override
@@ -193,22 +204,14 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
 
     @Override
     public void onNewPlayerRecieved(NewPlayerEvent newPlayerEvent) {
+        Peer peer = newPlayerEvent.getMessageOriginator().getPeer();
+        peer.setDisplayName(newPlayerEvent.getPlayerInfo().getDisplayName());
 
-        Peer newPeer = newPlayerEvent.getMessageOriginator().getPeer();
+        syncClientHandlerListView();
+    }
 
-        java.util.List<ClientHandler> clientHandlers = new ArrayList<ClientHandler>();
-
-        for (ClientHandler clientHandler : mClientHandlerListView.getItems()) {
-            Peer currentPeer = clientHandler.getPeer();
-
-            if (currentPeer.equals(newPeer)) {
-                PlayerInfo playerInfo = newPlayerEvent.getPlayerInfo();
-                currentPeer.setDisplayName(playerInfo.getDisplayName());
-            }
-
-            clientHandlers.add(clientHandler);
-        }
-
+    private void syncClientHandlerListView() {
+        java.util.List<ClientHandler> clientHandlers = new ArrayList<ClientHandler>(ClientManager.getClientHandlers());
         setClientHandlers(clientHandlers);
     }
 

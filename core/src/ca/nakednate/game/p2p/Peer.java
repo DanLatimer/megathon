@@ -45,13 +45,14 @@ public class Peer {
 
         Peer peer = (Peer) o;
 
-        if (!mHost.equals(peer.mHost)) return false;
+        if (mHost != null ? !mHost.equals(peer.mHost) : peer.mHost != null)
+            return false;
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return mHost.hashCode();
+        return mHost != null ? mHost.hashCode() : 0;
     }
 }
