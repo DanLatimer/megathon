@@ -45,7 +45,6 @@ public class Peer {
 
         Peer peer = (Peer) o;
 
-        if (mPort != peer.mPort) return false;
         if (!mHost.equals(peer.mHost)) return false;
 
         return true;
@@ -53,8 +52,6 @@ public class Peer {
 
     @Override
     public int hashCode() {
-        int result = mHost.hashCode();
-        result = 31 * result + mPort;
-        return result;
+        return mHost.hashCode();
     }
 }

@@ -1,5 +1,6 @@
 package ca.nakednate.game;
 
+import ca.nakednate.game.android.AndroidService;
 import ca.nakednate.game.models.GameState;
 import ca.nakednate.game.models.PlayerInfo;
 import ca.nakednate.game.models.events.GameRequestEvent;
@@ -47,10 +48,12 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
         Label gameListLabel = new Label("Available Games:", getSkin());
 
 
-        mDisplayNameTextField = new TextField("", getSkin());
+        String displayName = getDisplayName();
+        mDisplayNameTextField = new TextField(displayName, getSkin());
         mDisplayNameTextField.setTextFieldListener(new TextField.TextFieldListener() {
             @Override
             public void keyTyped(TextField textField, char c) {
+                saveDisplayName(mDisplayNameTextField.getText());
                 notifyClientHandlersOfNameChange();
             }
         });
@@ -130,6 +133,16 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
                 handshake(clientHandler);
             }
         }
+    }
+
+    public String getDisplayName() {
+        String phoneName = AndroidService.getPhoneName();
+        String displayName = AndroidService.onLoadSharedPref(AndroidService.DISPLAY_NAME, phoneName);
+        return displayName;
+    }
+
+    public void saveDisplayName(String displayName) {
+        AndroidService.onSaveSharedPref(AndroidService.DISPLAY_NAME, displayName);
     }
 
     /**

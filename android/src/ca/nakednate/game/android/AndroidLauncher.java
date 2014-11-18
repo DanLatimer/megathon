@@ -38,9 +38,9 @@ public class AndroidLauncher extends AndroidApplication implements DiscoveryServ
         mP2PServer = new P2PServer(this);
 		mUnfriendlyFire = new UnfriendlyFire();
 
-
 		initialize(mUnfriendlyFire, config);
 
+		AndroidService.setAndroidServiceListener(new AndroidServiceListener(this));
 		MainMenuScreen.setDiscoveryServiceListener(this);
 		ToastMaster.setToastMasterListener(this);
 	}
