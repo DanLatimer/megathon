@@ -71,6 +71,8 @@ public class MessageHandler {
             handleEvent((VehicleChoiceEvent) event);
         } else if (clazz == VehiclePositionEvent.class) {
             handleEvent((VehiclePositionEvent) event);
+        } else if (clazz == RequestPlayerInfoEvent.class) {
+            handleEvent((RequestPlayerInfoEvent) event);
         }
     }
 
@@ -109,9 +111,25 @@ public class MessageHandler {
         }
     }
 
+    /**
+     * Information about the opponent's current vehicle position
+     *
+     * @param vehiclePositionEvent
+     */
     private void handleEvent(VehiclePositionEvent vehiclePositionEvent) {
         if (mGameStateListener != null) {
             mGameStateListener.onVehiclePositionEvent(vehiclePositionEvent);
+        }
+    }
+
+    /**
+     * Event requesting the player info
+     *
+     * @param requestPlayerInfoEvent
+     */
+    private void handleEvent(RequestPlayerInfoEvent requestPlayerInfoEvent) {
+        if (mMainScreenListener != null) {
+            mMainScreenListener.onRequestPlayerInfoEvent(requestPlayerInfoEvent);
         }
     }
 

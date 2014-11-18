@@ -5,6 +5,7 @@ import ca.nakednate.game.models.GameState;
 import ca.nakednate.game.models.PlayerInfo;
 import ca.nakednate.game.models.events.GameRequestEvent;
 import ca.nakednate.game.models.events.NewPlayerEvent;
+import ca.nakednate.game.models.events.RequestPlayerInfoEvent;
 import ca.nakednate.game.p2p.ClientHandler;
 import ca.nakednate.game.p2p.ClientManager;
 import ca.nakednate.game.p2p.MessageHandler;
@@ -203,6 +204,12 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
     }
 
     @Override
+    public void onRequestPlayerInfoEvent(RequestPlayerInfoEvent requestPlayerInfoEvent) {
+        ClientHandler clientHandler = requestPlayerInfoEvent.getMessageOriginator();
+        sendDisplayNameToClient(clientHandler);
+    }
+
+    @Override
     public void onNewPlayerRecieved(NewPlayerEvent newPlayerEvent) {
         Peer peer = newPlayerEvent.getMessageOriginator().getPeer();
         peer.setDisplayName(newPlayerEvent.getPlayerInfo().getDisplayName());
@@ -212,14 +219,20 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
 
     private void syncClientHandlerListView() {
         java.util.List<ClientHandler> clientHandlers = new ArrayList<ClientHandler>(ClientManager.getClientHandlers());
+
+        for(ClientHandler clientHandler : clientHandlers) {
+            if(clientHandler.getPeer().getDisplayName() == null) {
+                RequestPlayerInfoEvent requestPlayerInfoEvent = new RequestPlayerInfoEvent(null);
+                clientHandler.sendJson(RequestPlayerInfoEvent.class, requestPlayerInfoEvent.toJSON());
+            }
+        }
+
         setClientHandlers(clientHandlers);
     }
 
     @Override
     public void onNewClientAdded() {
-        java.util.List<ClientHandler> clientHandlers = new ArrayList<ClientHandler>();
-        clientHandlers.addAll(ClientManager.getClientHandlers());
-        setClientHandlers(clientHandlers);
+        syncClientHandlerListView();
     }
 
     @Override
@@ -261,7 +274,9 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
         GameRequestEvent outgoingGameRequestEvent = new GameRequestEvent(null, accepted);
         opponent.sendJson(GameRequestEvent.class, outgoingGameRequestEvent.toJSON());
 
-        startGame(opponent);
+        if(accepted) {
+            startGame(opponent);
+        }
     }
 
     public static void setDiscoveryServiceListener(DiscoveryServiceListener discoveryServiceListener) {
