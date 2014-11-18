@@ -46,6 +46,7 @@ public class GameState extends BaseModel implements GameStateListener {
         mOpponentVehicle.getGroup().setX(vehiclePositionEvent.getX());
         mOpponentVehicle.getGroup().setY(vehiclePositionEvent.getY());
         mOpponentVehicle.getGroup().setRotation(vehiclePositionEvent.getHeading());
+        mOpponentVehicle.getWeapon().setRotation(vehiclePositionEvent.getTurretHeading());
 
         ClientHandler clientHandler = vehiclePositionEvent.getMessageOriginator();
         clientHandler.sendMyPosition();

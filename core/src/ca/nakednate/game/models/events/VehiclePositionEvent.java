@@ -8,12 +8,14 @@ public class VehiclePositionEvent extends BaseEvent {
     float mX;
     float mY;
     float mHeading;
+    float mTurretHeading;
 
     public VehiclePositionEvent(ClientHandler messageOriginator, Vehicle vehicle) {
         super(messageOriginator);
         mX = vehicle.getGroup().getX();
         mY = vehicle.getGroup().getY();
         mHeading = vehicle.getGroup().getRotation();
+        mTurretHeading = vehicle.getWeapon().getRotation();
     }
 
     @Override
@@ -28,5 +30,9 @@ public class VehiclePositionEvent extends BaseEvent {
 
     public float getHeading() {
         return mHeading;
+    }
+
+    public float getTurretHeading() {
+        return mTurretHeading;
     }
 }
