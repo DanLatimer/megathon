@@ -1,38 +1,39 @@
 package ca.nakednate.game.models.events;
 
-import ca.nakednate.game.p2p.ClientHandler;
+import ca.nakednate.game.models.weapon.Projectile;
 
 public class NewProjectileEvent extends BaseEvent {
 
     float mOriginX;
     float mOriginY;
     float mAzimuth; // angle of fire from the point of origin
+    float mSpeed;
     float mRange;
 
-    public NewProjectileEvent(ClientHandler messageOriginator, float originX, float originY, float azimuth, float range) {
-        super(messageOriginator);
-        mOriginX = originX;
-        mOriginY = originY;
-        mAzimuth = azimuth;
-        mRange = range;
+    public NewProjectileEvent(Projectile projectile) {
+        mOriginX = projectile.getOriginX();
+        mOriginY = projectile.getOriginY();
+        mAzimuth = projectile.getAzimuth();
+        mSpeed = projectile.getSpeed();
+        mRange = projectile.getRange();
     }
 
-    @Override
+    public Projectile getProjectile() {
+        return new Projectile(mOriginX, mOriginY, mAzimuth, mSpeed, mRange);
+    }
+
     public float getOriginX() {
         return mOriginX;
     }
 
-    @Override
     public void setOriginX(float originX) {
         mOriginX = originX;
     }
 
-    @Override
     public float getOriginY() {
         return mOriginY;
     }
 
-    @Override
     public void setOriginY(float originY) {
         mOriginY = originY;
     }

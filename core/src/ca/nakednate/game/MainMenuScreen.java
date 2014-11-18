@@ -80,7 +80,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
                 super.clicked(event, x, y);
 
                 ClientHandler selectedOpponent = mClientHandlerListView.getSelected();
-                GameRequestEvent gameRequestEvent = new GameRequestEvent(null, true);
+                GameRequestEvent gameRequestEvent = new GameRequestEvent(   true);
                 selectedOpponent.sendJson(GameRequestEvent.class, gameRequestEvent.toJSON());
 
                 mSentRequest = gameRequestEvent;
@@ -175,7 +175,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
     private void sendDisplayNameToClient(ClientHandler clientHandler) {
         try {
             PlayerInfo playerInfo = new PlayerInfo(mDisplayNameTextField.getText());
-            NewPlayerEvent newPlayerEvent = new NewPlayerEvent(null, playerInfo);
+            NewPlayerEvent newPlayerEvent = new NewPlayerEvent(playerInfo);
 
             clientHandler.sendJson(NewPlayerEvent.class, newPlayerEvent.toJSON());
         } catch (Exception e) {
@@ -222,7 +222,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
 
         for(ClientHandler clientHandler : clientHandlers) {
             if(clientHandler.getPeer().getDisplayName() == null) {
-                RequestPlayerInfoEvent requestPlayerInfoEvent = new RequestPlayerInfoEvent(null);
+                RequestPlayerInfoEvent requestPlayerInfoEvent = new RequestPlayerInfoEvent();
                 clientHandler.sendJson(RequestPlayerInfoEvent.class, requestPlayerInfoEvent.toJSON());
             }
         }
@@ -271,7 +271,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
     }
 
     private void acceptGameRequest(ClientHandler opponent, boolean accepted) {
-        GameRequestEvent outgoingGameRequestEvent = new GameRequestEvent(null, accepted);
+        GameRequestEvent outgoingGameRequestEvent = new GameRequestEvent(accepted);
         opponent.sendJson(GameRequestEvent.class, outgoingGameRequestEvent.toJSON());
 
         if(accepted) {

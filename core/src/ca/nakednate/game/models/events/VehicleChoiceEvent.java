@@ -3,7 +3,6 @@ package ca.nakednate.game.models.events;
 import ca.nakednate.game.models.vehicle.Jeep;
 import ca.nakednate.game.models.vehicle.Tank;
 import ca.nakednate.game.models.vehicle.Vehicle;
-import ca.nakednate.game.p2p.ClientHandler;
 
 public class VehicleChoiceEvent extends BaseEvent {
 
@@ -12,15 +11,14 @@ public class VehicleChoiceEvent extends BaseEvent {
         TANK
     }
 
-    private VehicleEnum mVehicle;
+    private VehicleEnum mVehicleEnum;
 
-    public VehicleChoiceEvent(ClientHandler messageOriginator, Vehicle vehicle) {
-        super(messageOriginator);
-        setVehicle(vehicle);
+    public VehicleChoiceEvent(Vehicle vehicle) {
+        setVehicleEnum(vehicle);
     }
 
-    public VehicleEnum getVehicle() {
-        return mVehicle;
+    public VehicleEnum getVehicleEnum() {
+        return mVehicleEnum;
     }
 
     public static Vehicle getVehicle(VehicleEnum vehicle) {
@@ -33,14 +31,14 @@ public class VehicleChoiceEvent extends BaseEvent {
         return null;
     }
 
-    public void setVehicle(Vehicle vehicle) {
+    public void setVehicleEnum(Vehicle vehicle) {
         if(vehicle instanceof Jeep) {
-            mVehicle = VehicleEnum.JEEP;
+            mVehicleEnum = VehicleEnum.JEEP;
             return;
         }
 
         if(vehicle instanceof Tank) {
-            mVehicle = VehicleEnum.TANK;
+            mVehicleEnum = VehicleEnum.TANK;
             return;
         }
     }

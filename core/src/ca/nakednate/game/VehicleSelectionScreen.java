@@ -149,7 +149,7 @@ public class VehicleSelectionScreen extends BaseScreen {
      */
     public void chooseVehicle(Vehicle vehicle) {
         mChoiceSent = true;
-        VehicleChoiceEvent myInitialChoices = new VehicleChoiceEvent(null, vehicle);
+        VehicleChoiceEvent myInitialChoices = new VehicleChoiceEvent(vehicle);
         mOpponent.sendJson(VehicleChoiceEvent.class, myInitialChoices.toJSON());
 
         GameState gameState = GameState.getInstance();

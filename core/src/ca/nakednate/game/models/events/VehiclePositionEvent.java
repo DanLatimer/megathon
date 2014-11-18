@@ -1,7 +1,6 @@
 package ca.nakednate.game.models.events;
 
 import ca.nakednate.game.models.vehicle.Vehicle;
-import ca.nakednate.game.p2p.ClientHandler;
 
 public class VehiclePositionEvent extends BaseEvent {
 
@@ -10,20 +9,17 @@ public class VehiclePositionEvent extends BaseEvent {
     float mHeading;
     float mTurretHeading;
 
-    public VehiclePositionEvent(ClientHandler messageOriginator, Vehicle vehicle) {
-        super(messageOriginator);
+    public VehiclePositionEvent(Vehicle vehicle) {
         mX = vehicle.getGroup().getX();
         mY = vehicle.getGroup().getY();
         mHeading = vehicle.getGroup().getRotation();
         mTurretHeading = vehicle.getWeapon().getRotation();
     }
 
-    @Override
     public float getX() {
         return mX;
     }
 
-    @Override
     public float getY() {
         return mY;
     }

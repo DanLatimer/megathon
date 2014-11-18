@@ -34,7 +34,7 @@ public class GameState extends BaseModel implements GameStateListener {
 
     @Override
     public void onVehicleChoiceEvent(VehicleChoiceEvent vehicleChoiceEvent) {
-        mOpponentVehicleEnum = vehicleChoiceEvent.getVehicle();
+        mOpponentVehicleEnum = vehicleChoiceEvent.getVehicleEnum();
     }
 
     @Override
