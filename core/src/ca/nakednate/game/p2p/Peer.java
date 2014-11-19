@@ -39,16 +39,16 @@ public class Peer {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) {
+    public boolean equals(Object other) {
+        if (this == other) {
             return true;
         }
-        if (o == null || getClass() != o.getClass()) {
+
+        if (other == null || getClass() != other.getClass()) {
             return false;
         }
 
-        Peer peer = (Peer) o;
-
+        Peer peer = (Peer) other;
         if (mHost != null ? !mHost.equals(peer.mHost) : peer.mHost != null) {
             return false;
         }

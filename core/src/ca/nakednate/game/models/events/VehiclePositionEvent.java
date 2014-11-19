@@ -7,13 +7,13 @@ public class VehiclePositionEvent extends BaseEvent {
     float mX;
     float mY;
     float mHeading;
-    float mTurretHeading;
+    float mPrimaryWeaponHeading;
 
     public VehiclePositionEvent(Vehicle vehicle) {
         mX = vehicle.getGroup().getX();
         mY = vehicle.getGroup().getY();
         mHeading = vehicle.getGroup().getRotation();
-        mTurretHeading = vehicle.getWeapon().getRotation();
+        mPrimaryWeaponHeading = vehicle.getWeapon().getRotation();
     }
 
     public float getX() {
@@ -28,7 +28,7 @@ public class VehiclePositionEvent extends BaseEvent {
         return mHeading;
     }
 
-    public float getTurretHeading() {
-        return mTurretHeading;
+    public float getPrimaryWeaponHeading() {
+        return mPrimaryWeaponHeading;
     }
 }
