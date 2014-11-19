@@ -39,19 +39,25 @@ public class Peer {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+    public boolean equals(Object other) {
+        if (this == other) {
+            return true;
+        }
 
-        Peer peer = (Peer) o;
+        if (other == null || getClass() != other.getClass()) {
+            return false;
+        }
 
-        if (!mHost.equals(peer.mHost)) return false;
+        Peer peer = (Peer) other;
+        if (mHost != null ? !mHost.equals(peer.mHost) : peer.mHost != null) {
+            return false;
+        }
 
         return true;
     }
 
     @Override
     public int hashCode() {
-        return mHost.hashCode();
+        return mHost != null ? mHost.hashCode() : 0;
     }
 }

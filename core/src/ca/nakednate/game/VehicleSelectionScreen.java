@@ -7,6 +7,8 @@ import ca.nakednate.game.models.vehicle.Tank;
 import ca.nakednate.game.models.vehicle.Vehicle;
 import ca.nakednate.game.p2p.ClientHandler;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -16,6 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,7 +36,7 @@ public class VehicleSelectionScreen extends BaseScreen {
     private static long TIME_NEXT_ACTIVITY_MILLIS = TimeUnit.SECONDS.toMillis(35);
 
     private boolean mChoiceSent = false;
-    private Label mNameLabel;
+    private Label mTimeRemainingLabel;
 
     public VehicleSelectionScreen(UnfriendlyFire game) {
         super(game);
@@ -60,14 +63,20 @@ public class VehicleSelectionScreen extends BaseScreen {
         Image background = new Image(new TextureRegion(new Texture(Gdx.files.internal("skin/vehicle_select.png"))));
         background.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+        mTimeRemainingLabel = new Label(getTimeRemainingForUser() + "", getSkin());
 
-        mNameLabel = new Label(getTimeRemainingForUser() + "", getSkin());
+        Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGB565);
+        pixmap.setColor(Color.GRAY);
+        pixmap.fill();
 
         Table table = new Table(getSkin());
+        table.setBackground(new TextureRegionDrawable(new TextureRegion(new Texture(pixmap))));
         table.align(Align.top);
-        table.setBounds(Gdx.graphics.getWidth() * 0.05f, 10, Gdx.graphics.getWidth() * 0.9f,
-                Gdx.graphics.getHeight() * 0.55f);
-        table.add(mNameLabel);
+
+        float tableWidth = mTimeRemainingLabel.getWidth() + 30;
+        float tableHeight = mTimeRemainingLabel.getHeight() + 10;
+        table.setBounds(Gdx.graphics.getWidth() * 0.5f - (tableWidth / 2), 10, tableWidth, tableHeight);
+        table.add(mTimeRemainingLabel).center();
 
         Stage stage = getStage();
         stage.addActor(background);
@@ -97,8 +106,7 @@ public class VehicleSelectionScreen extends BaseScreen {
     public void render(float delta) {
         super.render(delta);
 
-        mNameLabel.setText(getTimeRemainingForUser() + "");
-
+        mTimeRemainingLabel.setText(getTimeRemainingForUser() + "");
 
         if(getTimeTillNextActivityMillis() <= 0 || isBothVehiclesChosen()) {
             launchGame();
@@ -149,7 +157,7 @@ public class VehicleSelectionScreen extends BaseScreen {
      */
     public void chooseVehicle(Vehicle vehicle) {
         mChoiceSent = true;
-        VehicleChoiceEvent myInitialChoices = new VehicleChoiceEvent(null, vehicle);
+        VehicleChoiceEvent myInitialChoices = new VehicleChoiceEvent(vehicle);
         mOpponent.sendJson(VehicleChoiceEvent.class, myInitialChoices.toJSON());
 
         GameState gameState = GameState.getInstance();

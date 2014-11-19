@@ -1,7 +1,6 @@
 package ca.nakednate.game.p2p;
 
 import ca.nakednate.game.android.ToastMaster;
-import ca.nakednate.game.models.BaseModel;
 import ca.nakednate.game.models.events.*;
 import ca.nakednate.game.p2p.listeners.GameStateListener;
 import ca.nakednate.game.p2p.listeners.MainScreenListener;
@@ -71,6 +70,8 @@ public class MessageHandler {
             handleEvent((VehicleChoiceEvent) event);
         } else if (clazz == VehiclePositionEvent.class) {
             handleEvent((VehiclePositionEvent) event);
+        } else if (clazz == RequestPlayerInfoEvent.class) {
+            handleEvent((RequestPlayerInfoEvent) event);
         }
     }
 
@@ -104,14 +105,30 @@ public class MessageHandler {
      */
     private void handleEvent(VehicleChoiceEvent vehicleChoiceEvent) {
         if (mGameStateListener != null) {
-            ToastMaster.debugToast("New Vehicle Choice Event: " + vehicleChoiceEvent.getVehicle(), false);
+            ToastMaster.debugToast("New Vehicle Choice Event: " + vehicleChoiceEvent.getVehicleEnum(), false);
             mGameStateListener.onVehicleChoiceEvent(vehicleChoiceEvent);
         }
     }
 
+    /**
+     * Information about the opponent's current vehicle position
+     *
+     * @param vehiclePositionEvent
+     */
     private void handleEvent(VehiclePositionEvent vehiclePositionEvent) {
         if (mGameStateListener != null) {
             mGameStateListener.onVehiclePositionEvent(vehiclePositionEvent);
+        }
+    }
+
+    /**
+     * Event requesting the player info
+     *
+     * @param requestPlayerInfoEvent
+     */
+    private void handleEvent(RequestPlayerInfoEvent requestPlayerInfoEvent) {
+        if (mMainScreenListener != null) {
+            mMainScreenListener.onRequestPlayerInfoEvent(requestPlayerInfoEvent);
         }
     }
 
@@ -151,9 +168,10 @@ public class MessageHandler {
             return null;
         }
 
-        BaseEvent event = (BaseEvent) BaseModel.fromJson(line, clazz);
+        BaseEvent event = (BaseEvent) BaseEvent.fromJson(line, clazz);
         if (event == null) {
-            return new DummyEvent(mClientHandler);
+            ToastMaster.debugToast("Unable to parse event. Dummy created", false);
+            event = new DummyEvent();
         }
 
         event.setMessageOriginator(mClientHandler);

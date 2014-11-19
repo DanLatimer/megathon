@@ -20,6 +20,11 @@ public class ClientManager {
 
     public static ClientHandler getOrCreateClientHandler(Peer peer) {
 
+        ClientHandler clientHandler = mClientHandlerList.get(peer);
+        if(clientHandler != null) {
+            return clientHandler;
+        }
+
         Socket clientSocket;
         try {
             clientSocket = new Socket(peer.getHost().getHostAddress(), peer.getPort());
@@ -29,7 +34,7 @@ public class ClientManager {
             return null;
         }
 
-        ClientHandler clientHandler = new ClientHandler(clientSocket);
+        clientHandler = new ClientHandler(clientSocket);
         new Thread(clientHandler).start();
 
         addClientHandler(clientHandler);
@@ -60,4 +65,5 @@ public class ClientManager {
     public static void removePeer(Peer peer) {
         mClientHandlerList.remove(peer);
     }
+
 }

@@ -34,7 +34,7 @@ public class GameState extends BaseModel implements GameStateListener {
 
     @Override
     public void onVehicleChoiceEvent(VehicleChoiceEvent vehicleChoiceEvent) {
-        mOpponentVehicleEnum = vehicleChoiceEvent.getVehicle();
+        mOpponentVehicleEnum = vehicleChoiceEvent.getVehicleEnum();
     }
 
     @Override
@@ -46,6 +46,7 @@ public class GameState extends BaseModel implements GameStateListener {
         mOpponentVehicle.getGroup().setX(vehiclePositionEvent.getX());
         mOpponentVehicle.getGroup().setY(vehiclePositionEvent.getY());
         mOpponentVehicle.getGroup().setRotation(vehiclePositionEvent.getHeading());
+        mOpponentVehicle.getWeapon().setRotation(vehiclePositionEvent.getPrimaryWeaponHeading());
 
         ClientHandler clientHandler = vehiclePositionEvent.getMessageOriginator();
         clientHandler.sendMyPosition();

@@ -5,6 +5,7 @@ import ca.nakednate.game.models.GameState;
 import ca.nakednate.game.models.PlayerInfo;
 import ca.nakednate.game.models.events.GameRequestEvent;
 import ca.nakednate.game.models.events.NewPlayerEvent;
+import ca.nakednate.game.models.events.RequestPlayerInfoEvent;
 import ca.nakednate.game.p2p.ClientHandler;
 import ca.nakednate.game.p2p.ClientManager;
 import ca.nakednate.game.p2p.MessageHandler;
@@ -79,7 +80,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
                 super.clicked(event, x, y);
 
                 ClientHandler selectedOpponent = mClientHandlerListView.getSelected();
-                GameRequestEvent gameRequestEvent = new GameRequestEvent(null, true);
+                GameRequestEvent gameRequestEvent = new GameRequestEvent(   true);
                 selectedOpponent.sendJson(GameRequestEvent.class, gameRequestEvent.toJSON());
 
                 mSentRequest = gameRequestEvent;
@@ -98,7 +99,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
         table.row();
         table.add(gameListLabel).colspan(2);
         table.row();
-        table.add(scrollPane).colspan(2);
+        table.add(scrollPane).width(Gdx.graphics.getWidth() * 0.5f).colspan(2);
         table.row();
         table.add(refreshButton).colspan(2).center();
 
@@ -110,6 +111,17 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
 
         MessageHandler.setMainScreenListener(this);
         ClientManager.setMainScreenListener(this);
+    }
+
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+
+        int numberClientsInList = mClientHandlerListView.getItems().size;
+        int numberClientHandlers = ClientManager.getClientHandlers().size();
+        if(numberClientsInList != numberClientHandlers) {
+            syncClientHandlerListView();
+        }
     }
 
     @Override
@@ -163,7 +175,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
     private void sendDisplayNameToClient(ClientHandler clientHandler) {
         try {
             PlayerInfo playerInfo = new PlayerInfo(mDisplayNameTextField.getText());
-            NewPlayerEvent newPlayerEvent = new NewPlayerEvent(null, playerInfo);
+            NewPlayerEvent newPlayerEvent = new NewPlayerEvent(playerInfo);
 
             clientHandler.sendJson(NewPlayerEvent.class, newPlayerEvent.toJSON());
         } catch (Exception e) {
@@ -192,21 +204,27 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
     }
 
     @Override
+    public void onRequestPlayerInfoEvent(RequestPlayerInfoEvent requestPlayerInfoEvent) {
+        ClientHandler clientHandler = requestPlayerInfoEvent.getMessageOriginator();
+        sendDisplayNameToClient(clientHandler);
+    }
+
+    @Override
     public void onNewPlayerRecieved(NewPlayerEvent newPlayerEvent) {
+        Peer peer = newPlayerEvent.getMessageOriginator().getPeer();
+        peer.setDisplayName(newPlayerEvent.getPlayerInfo().getDisplayName());
 
-        Peer newPeer = newPlayerEvent.getMessageOriginator().getPeer();
+        syncClientHandlerListView();
+    }
 
-        java.util.List<ClientHandler> clientHandlers = new ArrayList<ClientHandler>();
+    private void syncClientHandlerListView() {
+        java.util.List<ClientHandler> clientHandlers = new ArrayList<ClientHandler>(ClientManager.getClientHandlers());
 
-        for (ClientHandler clientHandler : mClientHandlerListView.getItems()) {
-            Peer currentPeer = clientHandler.getPeer();
-
-            if (currentPeer.equals(newPeer)) {
-                PlayerInfo playerInfo = newPlayerEvent.getPlayerInfo();
-                currentPeer.setDisplayName(playerInfo.getDisplayName());
+        for(ClientHandler clientHandler : clientHandlers) {
+            if(clientHandler.getPeer().getDisplayName() == null) {
+                RequestPlayerInfoEvent requestPlayerInfoEvent = new RequestPlayerInfoEvent();
+                clientHandler.sendJson(RequestPlayerInfoEvent.class, requestPlayerInfoEvent.toJSON());
             }
-
-            clientHandlers.add(clientHandler);
         }
 
         setClientHandlers(clientHandlers);
@@ -214,9 +232,7 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
 
     @Override
     public void onNewClientAdded() {
-        java.util.List<ClientHandler> clientHandlers = new ArrayList<ClientHandler>();
-        clientHandlers.addAll(ClientManager.getClientHandlers());
-        setClientHandlers(clientHandlers);
+        syncClientHandlerListView();
     }
 
     @Override
@@ -255,10 +271,12 @@ public class MainMenuScreen extends BaseScreen implements PeerDiscoveryListener,
     }
 
     private void acceptGameRequest(ClientHandler opponent, boolean accepted) {
-        GameRequestEvent outgoingGameRequestEvent = new GameRequestEvent(null, accepted);
+        GameRequestEvent outgoingGameRequestEvent = new GameRequestEvent(accepted);
         opponent.sendJson(GameRequestEvent.class, outgoingGameRequestEvent.toJSON());
 
-        startGame(opponent);
+        if(accepted) {
+            startGame(opponent);
+        }
     }
 
     public static void setDiscoveryServiceListener(DiscoveryServiceListener discoveryServiceListener) {

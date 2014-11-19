@@ -118,7 +118,7 @@ public class ClientHandler implements Runnable {
             new Thread(new Runnable() {
                 @Override
                 public void run() {
-                    VehiclePositionEvent myVehiclePosition = new VehiclePositionEvent(null, myVehicle);
+                    VehiclePositionEvent myVehiclePosition = new VehiclePositionEvent(myVehicle);
                     sendJson(VehiclePositionEvent.class, myVehiclePosition.toJSON());
                 }
             }).start();
